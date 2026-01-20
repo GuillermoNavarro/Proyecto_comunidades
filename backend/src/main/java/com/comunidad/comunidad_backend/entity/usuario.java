@@ -1,8 +1,15 @@
 package com.comunidad.comunidad_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
-
+/**
+ * Entidad que representa a un usuario en el sistema.
+ * Esta clase está mapeada a la tabla "usuarios" en la base de datos.
+ * Se ha implementado un sistema de borrado lógico mediante el campo "estado".
+ * @author Guillermo Navarro
+ */
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -27,7 +34,12 @@ public class Usuario {
     @Column(name = "telefono")
     private String telefono;
 
+    /**
+     * La contraseña del usuario encriptada. (actualmente en texto plano, para pruebas iniciales)
+     * Este campo está anotado con @JsonIgnore para evitar que se exponga en las respuestas JSON.
+    */
     @Column(name = "password")
+    @JsonIgnore
     private String password;
 
     @Column(name = "rol")
@@ -40,7 +52,15 @@ public class Usuario {
     private String email;
 
     @Column(name = "coeficiente")
-    private Double coeficiente;    
+    private Double coeficiente;  
+    
+    /**
+     * indica si el usuario está activo o ha sido "borrado" lógicamente.
+     * true = activo, false = inactivo (borrado lógico).
+     * Por defecto, el valor es true.
+    */
+    @Column(name = "estado")
+    private boolean estado = true;
 
     public Usuario(){}
 
@@ -131,7 +151,17 @@ public class Usuario {
     public void setCoeficiente(Double coeficiente) {
         this.coeficiente = coeficiente;
     }
-}
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
+    
+    }
 
 
 

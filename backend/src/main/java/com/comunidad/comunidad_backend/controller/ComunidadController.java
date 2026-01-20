@@ -8,7 +8,9 @@ import com.comunidad.comunidad_backend.repository.ComunidadRepository;
 import java.util.List;
 
 
-
+/**
+ * Controlador que permite gestionar las comunidades
+ */
 @RestController
 @RequestMapping("/api/comunidades")
 public class ComunidadController {
