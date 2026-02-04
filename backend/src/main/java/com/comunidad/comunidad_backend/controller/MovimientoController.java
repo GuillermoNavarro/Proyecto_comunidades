@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.comunidad.comunidad_backend.entity.Movimiento;
-import com.comunidad.comunidad_backend.repository.MovimientoRepository;
+import com.comunidad.comunidad_backend.service.MovimientoService;
 
 
 
@@ -18,26 +18,26 @@ import com.comunidad.comunidad_backend.repository.MovimientoRepository;
 public class MovimientoController {
 
     @Autowired
-    private MovimientoRepository movimientoRepository;
+    private MovimientoService movimientoService;
 
     @GetMapping
     public List<Movimiento> getAllMovimientos(){
-        return movimientoRepository.findAll();
+        return movimientoService.findAll();
     }
 
     @PostMapping
     public Movimiento createMovimiento(@RequestBody Movimiento movimiento){
-        return movimientoRepository.save(movimiento);
+        return movimientoService.save(movimiento);
     }
 
     @GetMapping("/comunidad/{idComunidad}")
     public List<Movimiento> getMovientosPorComunidad(@PathVariable Long idComunidad){
-        return movimientoRepository.findByIdComunidad(idComunidad);
+        return movimientoService.findByComunidadId(idComunidad);
     }
     
     @GetMapping("/usuario/{idUsuario}")
     public List<Movimiento> getMovimientosPorUsuario(@PathVariable Long idUsuario){
-        return movimientoRepository.findByIdUsuario(idUsuario);
+        return movimientoService.findByUsuarioId(idUsuario);
     }
     
     

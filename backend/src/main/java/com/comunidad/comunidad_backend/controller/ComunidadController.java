@@ -3,7 +3,7 @@ package com.comunidad.comunidad_backend.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.comunidad.comunidad_backend.entity.Comunidad;
-import com.comunidad.comunidad_backend.repository.ComunidadRepository;
+import com.comunidad.comunidad_backend.service.ComunidadService;
 
 import java.util.List;
 
@@ -16,16 +16,16 @@ import java.util.List;
 public class ComunidadController {
     
     @Autowired
-    private ComunidadRepository comunidadRepository;
+    private ComunidadService comunidadService;
 
     @GetMapping
     public List<Comunidad> getAllComunidades() {
-        return comunidadRepository.findAll();
+        return comunidadService.findAll();
     }
 
     @PostMapping
     public Comunidad createComunidad(@RequestBody Comunidad comunidad) {
-        return comunidadRepository.save(comunidad);
+        return comunidadService.save(comunidad);
     }
 
 }

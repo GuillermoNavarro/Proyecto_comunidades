@@ -1,6 +1,10 @@
 package com.comunidad.comunidad_backend.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -15,23 +19,39 @@ public class Movimiento {
     @Column(name="nombre")
     private String nombre;
 
-    @Column(name="id_comunidad")
-    private Long idComunidad;
+    /**
+     * Relación Many-to-One con la entidad Comunidad
+     */
+    @ManyToOne(optional = false)
+    @JoinColumn(name="id_comunidad", nullable = false)
+    private Comunidad comunidad;
 
-    @Column(name="id_usuario")
-    private Long idUsuario;
+    /**
+     * Relación Many-to-One con la entidad Usuario
+     * Puede ser nulo en caso de movimientos de gastos
+     * Ignoramos ciertas propiedades para evitar ciclos de serialización
+     */
+    @ManyToOne(optional = true)
+    @JoinColumn(name="id_usuario", nullable = true)
+    @JsonIgnoreProperties({"password", "movimientos", "comunidad"})
+    private Usuario usuario;
 
     @Column(name="fecha")
     private LocalDate fecha;
 
     @Column(name="importe")
-    private Double importe;
+    private BigDecimal importe;
 
     @Column(name="tipo")
     private String tipo;
 
-    @Column(name="id_cuota")
-    private Long idCuota;
+    //@Column(name="id_cuota")
+    //private Long idCuota;
+    @ManyToOne(optional = true)
+    @JoinColumn(name="id_cuota", nullable = true)
+    @JsonIgnoreProperties("comunidad")
+    private Cuota cuota;
+
 
     public Movimiento(){}
 
@@ -51,20 +71,20 @@ public class Movimiento {
         this.nombre = nombre;
     }
 
-    public Long getIdComunidad() {
-        return idComunidad;
+    public Comunidad getComunidad() {
+        return comunidad;
     }
 
-    public void setIdComunidad(Long idComunidad) {
-        this.idComunidad = idComunidad;
+    public void setComunidad(Comunidad comunidad) {
+        this.comunidad = comunidad;
     }
 
-    public Long getIdUsuario() {
-        return idUsuario;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setIdUsuario(Long idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public LocalDate getFecha() {
@@ -75,11 +95,11 @@ public class Movimiento {
         this.fecha = fecha;
     }
 
-    public Double getImporte() {
+    public BigDecimal getImporte() {
         return importe;
     }
 
-    public void setImporte(Double importe) {
+    public void setImporte(BigDecimal importe) {
         this.importe = importe;
     }
 
@@ -91,12 +111,12 @@ public class Movimiento {
         this.tipo = tipo;
     }
 
-    public Long getIdCuota() {
-        return idCuota;
+    public Cuota getCuota() {
+        return cuota;
     }
 
-    public void setIdCuota(Long idCuota) {
-        this.idCuota = idCuota;
+    public void setCuota(Cuota cuota) {
+        this.cuota = cuota;
     }
 
     

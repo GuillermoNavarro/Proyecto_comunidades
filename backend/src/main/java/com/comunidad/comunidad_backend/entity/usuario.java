@@ -1,6 +1,7 @@
 package com.comunidad.comunidad_backend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
 
@@ -8,6 +9,7 @@ import jakarta.persistence.*;
  * Entidad que representa a un usuario en el sistema.
  * Esta clase está mapeada a la tabla "usuarios" en la base de datos.
  * Se ha implementado un sistema de borrado lógico mediante el campo "estado".
+ * 
  * @author Guillermo Navarro
  */
 @Entity
@@ -35,34 +37,43 @@ public class Usuario {
     private String telefono;
 
     /**
-     * La contraseña del usuario encriptada. (actualmente en texto plano, para pruebas iniciales)
-     * Este campo está anotado con @JsonIgnore para evitar que se exponga en las respuestas JSON.
-    */
+     * La contraseña del usuario encriptada. (actualmente en texto plano, para
+     * pruebas iniciales)
+     * Utiliza @JsonProperty con Access.WRITE_ONLY para permitir que se envie en    
+     * registros(POST), pero no se incluya en las respuestas JSON (GET).
+     */
     @Column(name = "password")
-    @JsonIgnore
+    //@JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "rol")
     private String rol;
 
-    @Column(name = "id_comunidad")
-    private Long idComunidad;
+    /**
+     * Relación Many-to-One con la entidad Comunidad.
+     * Un usuario pertenece a una única comunidad.
+     */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_comunidad", nullable = false) 
+    private Comunidad comunidad;   
 
     @Column(name = "email")
     private String email;
 
     @Column(name = "coeficiente")
-    private Double coeficiente;  
-    
+    private Double coeficiente;
+
     /**
      * indica si el usuario está activo o ha sido "borrado" lógicamente.
      * true = activo, false = inactivo (borrado lógico).
      * Por defecto, el valor es true.
-    */
+     */
     @Column(name = "estado")
     private boolean estado = true;
 
-    public Usuario(){}
+    public Usuario() {
+    }
 
     public Long getId() {
         return id;
@@ -128,12 +139,12 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public Long getIdComunidad() {
-        return idComunidad;
+    public Comunidad getComunidad() {
+        return comunidad;
     }
 
-    public void setIdComunidad(Long idComunidad) {
-        this.idComunidad = idComunidad;
+    public void setComunidad(Comunidad comunidad) {
+        this.comunidad = comunidad;
     }
 
     public String getEmail() {
@@ -160,9 +171,4 @@ public class Usuario {
         this.estado = estado;
     }
 
-    
-    }
-
-
-
-    
+}

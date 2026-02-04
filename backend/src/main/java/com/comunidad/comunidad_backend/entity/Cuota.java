@@ -1,5 +1,6 @@
 package com.comunidad.comunidad_backend.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import jakarta.persistence.*;
 
@@ -18,17 +19,25 @@ public class Cuota {
     private String nombre;
 
     @Column(name="fecha_emision")
-    private LocalDate fchEmision;
+    private LocalDate fechaEmision;
 
     @Column(name="importe_total")
-    private Double importe;
+    private BigDecimal importe;
 
     @Column(name="tipo")
     private String tipo;
 
-    @Column(name="id_comunidad")
-    private Long idComunidad;
+    //@Column(name="id_comunidad")
+    //private Long idComunidad;
+    /**
+     * Relación Many-to-One con la entidad Comunidad
+     * JoinColumn especifica la columna que actúa como clave foránea     * 
+     */
+    @ManyToOne(optional = false) 
+    @JoinColumn(name="id_comunidad", nullable = false)
+    private Comunidad comunidad;
     
+   
     public Cuota(){}
 
     public Long getId() {
@@ -47,19 +56,19 @@ public class Cuota {
         this.nombre = nombre;
     }
 
-    public LocalDate getFchEmision() {
-        return fchEmision;
+    public LocalDate getFechaEmision() {
+        return fechaEmision;
     }
 
-    public void setFchEmision(LocalDate fchEmision) {
-        this.fchEmision = fchEmision;
+    public void setFechaEmision(LocalDate fechaEmision) {
+        this.fechaEmision = fechaEmision;
     }
 
-    public Double getImporte() {
+    public BigDecimal getImporte() {
         return importe;
     }
 
-    public void setImporte(Double importe) {
+    public void setImporte(BigDecimal importe) {
         this.importe = importe;
     }
 
@@ -71,11 +80,13 @@ public class Cuota {
         this.tipo = tipo;
     }
 
-    public Long getIdComunidad() {
-        return idComunidad;
+    public Comunidad getComunidad() {
+        return comunidad;
     }
 
-    public void setIdComunidad(Long idComunidad) {
-        this.idComunidad = idComunidad;
+    public void setComunidad(Comunidad comunidad) {
+        this.comunidad = comunidad;
     }
+
+
 }

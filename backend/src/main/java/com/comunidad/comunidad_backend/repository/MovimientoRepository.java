@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface MovimientoRepository extends JpaRepository<Movimiento, Long> {
     
-    List<Movimiento> findByIdComunidad(Long idComunidad);
-    List<Movimiento> findByIdUsuario(Long idUsuario);
+    List<Movimiento> findByComunidadId(Long idComunidad);
+    List<Movimiento> findByUsuarioId(Long idUsuario);
 
 }
