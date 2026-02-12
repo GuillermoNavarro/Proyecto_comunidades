@@ -2,11 +2,11 @@
 
 Proyecto Intermodular de Desarrollo de Aplicaciones Web
 
-#Descripción
-Backend desarrollado con Spring Boot y MySQL para la gestion integral de comunidades utogestionadas
+## Descripción
+Backend desarrollado con Spring Boot y MySQL para la gestión integral de comunidades autogestionadas
 
-#Tecnologías
-* Java 25
-* Spring Boot 4
-* MySQL
-* Maven
+## Tecnologías
+* **Lenguaje:** Java 21
+* **Framework:** Spring Boot 4.0.2
+* **Base de Datos:** MySQL
+* **Gestor de Dependencias:** Maven
