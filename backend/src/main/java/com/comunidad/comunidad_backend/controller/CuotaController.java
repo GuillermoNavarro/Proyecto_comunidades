@@ -1,12 +1,17 @@
 package com.comunidad.comunidad_backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.comunidad.comunidad_backend.entity.Cuota;
 import com.comunidad.comunidad_backend.service.CuotaService;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
+
+
+
+
+
 
 
 
@@ -31,6 +36,19 @@ public class CuotaController {
     public List<Cuota> getCuotasPorComunidad(@PathVariable Long idComunidad){
         return cuotaService.findByComunidadId(idComunidad);
     }
+
+    @GetMapping("/{idUsuario}")
+    public ResponseEntity<Cuota> getCuotaPorId(@PathVariable Long idUsuario){
+        Cuota cuota = cuotaService.findById(idUsuario);
+        if(cuota != null){
+            return ResponseEntity.ok(cuota);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    
+    
     
     
     

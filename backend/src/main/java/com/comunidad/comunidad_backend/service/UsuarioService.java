@@ -23,6 +23,10 @@ public class UsuarioService {
     public List<Usuario> findByComunidadId(Long idComunidad) {
         return usuarioRepository.findByComunidadId(idComunidad);
     }
+
+    public Usuario findById(Long id){
+        return usuarioRepository.findById(id).orElse(null);
+    }
     
     public boolean deleteUsuario(Long idUsuario) {
         Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
@@ -32,5 +36,21 @@ public class UsuarioService {
             return true;
         }
         return false;
-    }   
+    }
+    
+    public boolean login(String email, String password){
+        Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
+        
+        if(usuario == null){
+            return false;
+        }
+        if(!usuario.getEstado()){
+            return false;
+        }
+        if(!usuario.getPassword().equals(password)) {
+            return false;
+        } 
+        return true;
+            
+    }
 }

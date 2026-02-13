@@ -3,9 +3,12 @@ package com.comunidad.comunidad_backend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.comunidad.comunidad_backend.entity.Movimiento;
 import com.comunidad.comunidad_backend.service.MovimientoService;
+
+
 
 
 
@@ -39,6 +42,17 @@ public class MovimientoController {
     public List<Movimiento> getMovimientosPorUsuario(@PathVariable Long idUsuario){
         return movimientoService.findByUsuarioId(idUsuario);
     }
+
+    @GetMapping("/{idMovimiento}")
+    public ResponseEntity<Movimiento> getMovimientoPorId(@PathVariable Long idMovimiento){
+        Movimiento movimiento = movimientoService.findById(idMovimiento);
+        if(movimiento != null){
+            return ResponseEntity.ok(movimiento);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
     
     
     

@@ -23,5 +23,9 @@ public class CuotaService {
     public  List<Cuota> findByComunidadId (Long idComunidad) {
         return cuotaRepository.findByComunidadId(idComunidad);
     }
+
+    public Cuota findById(Long id){
+        return cuotaRepository.findById(id).orElse(null);
+    }
     
 }

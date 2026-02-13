@@ -163,7 +163,7 @@ public class Usuario {
         this.coeficiente = coeficiente;
     }
 
-    public boolean isEstado() {
+    public boolean getEstado() {
         return estado;
     }
 

@@ -18,6 +18,32 @@ public class ComunidadService {
 
     public Comunidad save(Comunidad comunidad) {
         return comunidadRepository.save(comunidad);
-    }   
+    }
+
+    public Comunidad findById(Long id){
+        return comunidadRepository.findById(id).orElse(null);
+    }
+    
+    public Comunidad modificarComunidad(Long id, Comunidad comunidadNuevo){
+        Comunidad comunidadActual = comunidadRepository.findById(id).orElse(null);
+        if(comunidadActual==null){
+            return null;
+        }
+        if(comunidadNuevo.getNombre() != null){
+            comunidadActual.setNombre(comunidadNuevo.getNombre());
+        }
+        if(comunidadNuevo.getDireccion() != null){
+            comunidadActual.setDireccion(comunidadNuevo.getDireccion());
+        }
+        if(comunidadNuevo.getCiudad() != null){
+            comunidadActual.setCiudad(comunidadNuevo.getCiudad());
+        }   
+        if(comunidadNuevo.getCodPostal() != null){
+            comunidadActual.setCodPostal(comunidadNuevo.getCodPostal());
+        }
+        comunidadRepository.save(comunidadActual);
+        return comunidadActual;
+    }
+
     
 }

@@ -28,5 +28,9 @@ public class MovimientoService {
     public  List<Movimiento> findByUsuarioId (Long idUsuario) {
         return movimientoRepository.findByUsuarioId(idUsuario);
     }
+
+    public Movimiento findById(Long idMovimiento){
+        return movimientoRepository.findById(idMovimiento).orElse(null);
+    }
     
 }
