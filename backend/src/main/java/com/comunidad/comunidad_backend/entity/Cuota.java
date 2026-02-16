@@ -21,6 +21,9 @@ public class Cuota {
     @Column(name="fecha_emision")
     private LocalDate fechaEmision;
 
+    @Column(name="fecha_vencimiento")
+    private LocalDate fechaVencimiento;
+
     @Column(name="importe_total")
     private BigDecimal importe;
 
@@ -62,6 +65,14 @@ public class Cuota {
 
     public void setFechaEmision(LocalDate fechaEmision) {
         this.fechaEmision = fechaEmision;
+    }
+    
+    public LocalDate getFechaVencimiento() {
+        return fechaVencimiento;
+    }
+
+    public void setFechaVencimiento(LocalDate fechaVencimiento) {
+        this.fechaVencimiento = fechaVencimiento;
     }
 
     public BigDecimal getImporte() {

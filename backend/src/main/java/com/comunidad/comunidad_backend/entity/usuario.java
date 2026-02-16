@@ -47,6 +47,9 @@ public class Usuario {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Column(name="cambiar_pass")
+    private boolean cambiarPass = true;
+
     @Column(name = "rol")
     private String rol;
 
@@ -129,6 +132,14 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean getCambiarPass(){
+        return cambiarPass;
+    }
+
+    public void setCambiarPass(boolean cambiarPass){
+        this.cambiarPass = cambiarPass;
     }
 
     public String getRol() {

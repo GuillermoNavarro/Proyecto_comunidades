@@ -3,7 +3,7 @@ package com.comunidad.comunidad_backend.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="comunidad")
+@Table(name="comunidades")
 public class Comunidad {
 
     @Id
