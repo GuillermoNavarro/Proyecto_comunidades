@@ -1,5 +1,6 @@
 package com.comunidad.comunidad_backend.entity;
 
+import com.comunidad.comunidad_backend.enus.Rol;
 //import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -50,8 +51,9 @@ public class Usuario {
     @Column(name="cambiar_pass")
     private boolean cambiarPass = true;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "rol")
-    private String rol;
+    private Rol rol = Rol.USER;
 
     /**
      * Relación Many-to-One con la entidad Comunidad.
@@ -72,8 +74,8 @@ public class Usuario {
      * true = activo, false = inactivo (borrado lógico).
      * Por defecto, el valor es true.
      */
-    @Column(name = "estado")
-    private boolean estado = true;
+    @Column(name = "estado", nullable = false)
+    private Boolean estado = true;
 
     public Usuario() {
     }
@@ -142,11 +144,11 @@ public class Usuario {
         this.cambiarPass = cambiarPass;
     }
 
-    public String getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
     }
 
@@ -174,11 +176,11 @@ public class Usuario {
         this.coeficiente = coeficiente;
     }
 
-    public boolean getEstado() {
+    public Boolean getEstado() {
         return estado;
     }
 
-    public void setEstado(boolean estado) {
+    public void setEstado(Boolean estado) {
         this.estado = estado;
     }
 

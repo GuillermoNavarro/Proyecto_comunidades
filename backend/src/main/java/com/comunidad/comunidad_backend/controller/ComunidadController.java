@@ -27,9 +27,9 @@ public class ComunidadController {
         return comunidadService.findAll();
     }
 
-    @GetMapping("/{idUsuario}")
-    public ResponseEntity<Comunidad> getComunidadPorId(@PathVariable Long idUsuario){
-        Comunidad comunidad = comunidadService.findById(idUsuario);
+    @GetMapping("/{id}")
+    public ResponseEntity<Comunidad> getComunidadPorId(@PathVariable Long id){
+        Comunidad comunidad = comunidadService.findById(id);
         if(comunidad != null){
             return ResponseEntity.ok(comunidad);
         }else{

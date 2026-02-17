@@ -1,15 +1,16 @@
 package com.comunidad.comunidad_backend.controller;
 
-import java.util.List;
+import com.comunidad.comunidad_backend.dto.CambioPass;
+import com.comunidad.comunidad_backend.dto.LoginRequest;
 
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.comunidad.comunidad_backend.entity.Usuario;
 import com.comunidad.comunidad_backend.service.UsuarioService;
-
-
 
 
 
@@ -26,8 +27,13 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public Usuario createUsuario(@RequestBody Usuario usuario){
-        return usuarioService.save(usuario);
+    ResponseEntity <?> createUsuario(@RequestBody Usuario usuario){
+        try{
+            String passNewUser = usuarioService.crearUsuario(usuario);
+            return ResponseEntity.ok("Usuario creado, Contraseña temporal: " + passNewUser);
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.status(409).body(e.getMessage());
+        }
     }
 
     @GetMapping("/comunidad/{idComunidad}")
@@ -66,31 +72,58 @@ public class UsuarioController {
             return ResponseEntity.status(401).body("Credenciales incorrectas o usuario inactivo.");
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> modificarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioNuevo) {
+        Usuario modificado = usuarioService.modificarUsuario(id, usuarioNuevo);
+        if(modificado != null){
+            return ResponseEntity.ok(modificado);
+        }else{
+            return ResponseEntity.status(404).body("Usuario no encontrado.");
+        }
+        
+    }
+
+    @PutMapping("/admin/{id}")
+    public ResponseEntity<?> modificarUsuarioAdmin(@PathVariable Long id, @RequestBody Usuario usuarioNuevo) {
+        Usuario modificado = usuarioService.modificarUsuarioAdmin(id, usuarioNuevo);
+        if(modificado != null){
+            return ResponseEntity.ok(modificado);
+        }else{
+            return ResponseEntity.status(404).body("Usuario no encontrado.");
+        }
+        
+    }
     
-    
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> cambioPasswordUser(@PathVariable Long id, @RequestBody CambioPass cambioPass){
+        if(cambioPass.getOldPassword() == null || cambioPass.getOldPassword().isBlank() ||
+            cambioPass.getNewPassword() == null || cambioPass.getNewPassword().isBlank()){
+            return ResponseEntity.status(400).body("Los datos de cambio de contraseña son obligatorios");
+        }
+        try{
+            usuarioService.cambioPassword(id, cambioPass);
+            return ResponseEntity.ok("Contraseña modificada");
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(401).body(e.getMessage());
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+       
+    }
+
+    @PatchMapping("/admin/{id}")
+    public ResponseEntity<?> cambioPassAdmin(@PathVariable Long id){
+        try{
+            String newPass = usuarioService.cambioPassAdmin(id);
+            return ResponseEntity.ok(newPass);
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
     
   
     
         
 }
 
-class LoginRequest {
-    private String email;
-    private String password;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-}

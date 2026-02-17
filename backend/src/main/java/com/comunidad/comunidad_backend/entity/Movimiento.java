@@ -3,6 +3,7 @@ package com.comunidad.comunidad_backend.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.comunidad.comunidad_backend.enus.TipoMovimiento;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
@@ -42,8 +43,9 @@ public class Movimiento {
     @Column(name="importe")
     private BigDecimal importe;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="tipo")
-    private String tipo;
+    private TipoMovimiento tipo;
 
     //@Column(name="id_cuota")
     //private Long idCuota;
@@ -103,11 +105,11 @@ public class Movimiento {
         this.importe = importe;
     }
 
-    public String getTipo() {
+    public TipoMovimiento getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoMovimiento tipo) {
         this.tipo = tipo;
     }
 

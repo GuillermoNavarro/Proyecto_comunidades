@@ -2,6 +2,9 @@ package com.comunidad.comunidad_backend.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import com.comunidad.comunidad_backend.enus.TipoCuota;
+
 import jakarta.persistence.*;
 
 
@@ -27,8 +30,9 @@ public class Cuota {
     @Column(name="importe_total")
     private BigDecimal importe;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="tipo")
-    private String tipo;
+    private TipoCuota tipo;
 
     //@Column(name="id_comunidad")
     //private Long idComunidad;
@@ -83,11 +87,11 @@ public class Cuota {
         this.importe = importe;
     }
 
-    public String getTipo() {
+    public TipoCuota getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoCuota tipo) {
         this.tipo = tipo;
     }
 

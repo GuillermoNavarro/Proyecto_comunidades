@@ -7,6 +7,8 @@ import com.comunidad.comunidad_backend.entity.Cuota;
 import com.comunidad.comunidad_backend.service.CuotaService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+
 
 
 
@@ -46,6 +48,19 @@ public class CuotaController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<?> modificarCuota(@PathVariable Long id, @RequestBody Cuota cuota){
+        try{
+            Cuota cuotaModificada = cuotaService.modificarCuota(id, cuota);
+            return ResponseEntity.ok(cuotaModificada);
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(404).body(e.getMessage());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(409).body(e.getMessage());
+        }    
+    }
+    
 
     
     
