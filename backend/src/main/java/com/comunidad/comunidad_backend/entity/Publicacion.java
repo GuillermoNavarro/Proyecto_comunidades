@@ -2,6 +2,8 @@ package com.comunidad.comunidad_backend.entity;
 
 import java.time.LocalDateTime;
 
+import com.comunidad.comunidad_backend.enus.TipoPublicacion;
+
 import jakarta.persistence.*;
 
 
@@ -14,8 +16,9 @@ public class Publicacion {
     @Column(name = "id_publicacion")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo")
-    private String tipo;
+    private TipoPublicacion tipo;
 
     @Column(name = "titulo")
     private String titulo;
@@ -58,12 +61,12 @@ public class Publicacion {
     }
 
 
-    public String getTipo() {
+    public TipoPublicacion getTipo() {
         return tipo;
     }
 
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoPublicacion tipo) {
         this.tipo = tipo;
     }
 

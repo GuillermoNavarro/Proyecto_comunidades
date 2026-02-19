@@ -2,6 +2,9 @@ package com.comunidad.comunidad_backend.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+
 import com.comunidad.comunidad_backend.repository.UsuarioRepository;
 import com.comunidad.comunidad_backend.dto.CambioPass;
 import com.comunidad.comunidad_backend.entity.Usuario;
@@ -17,11 +20,14 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private JavaMailSender javaMailSender;
+
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
 
-    public String crearUsuario(Usuario usuario) {
+    public Usuario crearUsuario(Usuario usuario) {
         if(usuarioRepository.findByDni(usuario.getDni()).isPresent()){
             throw new IllegalArgumentException("Ya existe un usuario con el DNI:" + usuario.getDni());
         }
@@ -32,7 +38,14 @@ public class UsuarioService {
         usuario.setPassword(newPassword);
         usuario.setCambiarPass(true);
         usuarioRepository.save(usuario);
-        return newPassword;
+
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setTo(usuario.getEmail());
+        mail.setSubject("Alta en Aplicacion");
+        mail.setText("Su usuario ha sido dado de alta en la aplicacion.\nPuede acceder con las siguientes credenciales \n\nUsuario: " + usuario.getEmail() + "\nContraseña: "+ newPassword + "\n\nLa primera vez que acceda sera necesario cambiar la contraseña.");
+        javaMailSender.send(mail);
+
+        return usuario;
     }
 
     public List<Usuario> findByComunidadId(Long idComunidad) {
@@ -136,7 +149,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public String cambioPassAdmin(Long id){
+    /*public String cambioPassAdmin(Long id){
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
         String newPassword = UUID.randomUUID().toString().substring(0, 8);
@@ -144,6 +157,21 @@ public class UsuarioService {
         usuario.setCambiarPass(true);
         usuarioRepository.save(usuario);
         return newPassword;
+    }*/
+
+     public void cambioPassAdmin(Long id){
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+
+        String newPassword = UUID.randomUUID().toString().substring(0, 8);
+        usuario.setPassword(newPassword);
+        usuario.setCambiarPass(true);
+        usuarioRepository.save(usuario);
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setTo(usuario.getEmail());
+        mail.setSubject("Cambio de Contraseña");
+        mail.setText("A peticion suya se ha cambiado la contrseñade acceso. \nRecuerde que necesitara cambiarla la primera vez que acceda \n\nContraseña provisional: " + newPassword);
+        javaMailSender.send(mail);
+
     }
 
 }

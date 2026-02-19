@@ -29,8 +29,8 @@ public class UsuarioController {
     @PostMapping
     ResponseEntity <?> createUsuario(@RequestBody Usuario usuario){
         try{
-            String passNewUser = usuarioService.crearUsuario(usuario);
-            return ResponseEntity.ok("Usuario creado, Contraseña temporal: " + passNewUser);
+            Usuario nuevoUsuario = usuarioService.crearUsuario(usuario);
+            return ResponseEntity.ok(nuevoUsuario);
         }catch(IllegalArgumentException e){
             return ResponseEntity.status(409).body(e.getMessage());
         }
@@ -115,8 +115,8 @@ public class UsuarioController {
     @PatchMapping("/admin/{id}")
     public ResponseEntity<?> cambioPassAdmin(@PathVariable Long id){
         try{
-            String newPass = usuarioService.cambioPassAdmin(id);
-            return ResponseEntity.ok(newPass);
+            usuarioService.cambioPassAdmin(id);
+            return ResponseEntity.status(200).build();
         }catch (NoSuchElementException e){
             return ResponseEntity.status(404).body(e.getMessage());
         }
