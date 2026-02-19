@@ -1,19 +1,16 @@
 package com.comunidad.comunidad_backend.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.comunidad.comunidad_backend.entity.Movimiento;
 import com.comunidad.comunidad_backend.service.MovimientoService;
-
-
-
-
-
-
-
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
@@ -53,6 +50,16 @@ public class MovimientoController {
         }
     }
     
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> modificarMovimiento(@PathVariable Long id, @RequestBody Movimiento movimiento){
+        try{
+            Movimiento movimientoModif = movimientoService.modificarMovimiento(id, movimiento);
+            return ResponseEntity.ok(movimientoModif);
+        }catch (NoSuchElementException e){
+            return ResponseEntity.status(404).body(e.getMessage()); 
+        }
+    }
     
     
     
