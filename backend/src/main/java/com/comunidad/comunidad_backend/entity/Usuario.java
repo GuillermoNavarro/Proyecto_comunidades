@@ -1,5 +1,12 @@
 package com.comunidad.comunidad_backend.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
+
 import com.comunidad.comunidad_backend.enus.Rol;
 //import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,7 +22,7 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "usuarios")
-public class Usuario {
+public class Usuario implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -182,6 +189,32 @@ public class Usuario {
 
     public void setEstado(Boolean estado) {
         this.estado = estado;
+    }
+
+    @Override
+    public String getUsername(){
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+
+    @Override
+    public boolean isEnabled() { return true; }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        if(this.cambiarPass){
+            return List.of(new SimpleGrantedAuthority("ROLE_PRE_AUTH"));
+        }
+        
+        return List.of(new SimpleGrantedAuthority("ROLE_" + rol.name()));
     }
 
 }

@@ -1,7 +1,7 @@
 package com.comunidad.comunidad_backend.controller;
 
 import com.comunidad.comunidad_backend.dto.CambioPass;
-import com.comunidad.comunidad_backend.dto.LoginRequest;
+
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -59,17 +59,6 @@ public class UsuarioController {
             return ResponseEntity.ok("Usuario eliminado correctamente.");
         } else {
             return ResponseEntity.status(404).body("Usuario no encontrado.");
-        }
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
-        boolean loginExitoso = usuarioService.login(loginRequest.getEmail(), loginRequest.getPassword());
-
-        if(loginExitoso){
-            return ResponseEntity.ok("Login exitoso.");
-        } else {
-            return ResponseEntity.status(401).body("Credenciales incorrectas o usuario inactivo.");
         }
     }
 

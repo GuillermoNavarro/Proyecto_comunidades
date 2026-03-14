@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.comunidad.comunidad_backend.repository.UsuarioRepository;
 import com.comunidad.comunidad_backend.dto.CambioPass;
@@ -23,6 +24,9 @@ public class UsuarioService {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
     }
@@ -35,7 +39,7 @@ public class UsuarioService {
         usuario.setRol(Rol.USER);
         usuario.setEstado(true);
         String newPassword = UUID.randomUUID().toString().substring(0, 8);
-        usuario.setPassword(newPassword);
+        usuario.setPassword(passwordEncoder.encode(newPassword));
         usuario.setCambiarPass(true);
         usuarioRepository.save(usuario);
 
@@ -66,20 +70,20 @@ public class UsuarioService {
         return false;
     }
     
-    public boolean login(String email, String password){
+    public Usuario login(String email, String password){
         Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
         
         if(usuario == null){
-            return false;
+            return null;
         }
         if(!usuario.getEstado()){
-            return false;
+            return null;
         }
-        if(!usuario.getPassword().equals(password)) {
-            return false;
+        if(!passwordEncoder.matches(password, usuario.getPassword())) {
+            return null;
         } 
-        return true;
-            
+
+        return usuario;            
     }
 
     private void actualizarComunes(Usuario actual, Usuario nuevo){
@@ -139,31 +143,21 @@ public class UsuarioService {
     public Usuario cambioPassword(Long id, CambioPass cambioPass){
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
-        if(!usuario.getPassword().equals(cambioPass.getOldPassword())){
+        if(!passwordEncoder.matches(cambioPass.getOldPassword(), usuario.getPassword())){
             throw new IllegalArgumentException("Contraseña incorrecta");
         }
 
-        usuario.setPassword(cambioPass.getNewPassword());
+        usuario.setPassword(passwordEncoder.encode(cambioPass.getNewPassword()));
         usuario.setCambiarPass(false);
 
         return usuarioRepository.save(usuario);
     }
 
-    /*public String cambioPassAdmin(Long id){
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
-
-        String newPassword = UUID.randomUUID().toString().substring(0, 8);
-        usuario.setPassword(newPassword);
-        usuario.setCambiarPass(true);
-        usuarioRepository.save(usuario);
-        return newPassword;
-    }*/
-
      public void cambioPassAdmin(Long id){
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
         String newPassword = UUID.randomUUID().toString().substring(0, 8);
-        usuario.setPassword(newPassword);
+        usuario.setPassword(passwordEncoder.encode(newPassword));
         usuario.setCambiarPass(true);
         usuarioRepository.save(usuario);
         SimpleMailMessage mail = new SimpleMailMessage();
