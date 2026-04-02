@@ -2,6 +2,7 @@ package com.comunidad.comunidad_backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.comunidad.comunidad_backend.entity.Comunidad;
 import com.comunidad.comunidad_backend.service.ComunidadService;
@@ -23,11 +24,13 @@ public class ComunidadController {
     private ComunidadService comunidadService;
 
     @GetMapping
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public List<Comunidad> getAllComunidades() {
         return comunidadService.findAll();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Comunidad> getComunidadPorId(@PathVariable Long id){
         Comunidad comunidad = comunidadService.findById(id);
         if(comunidad != null){
@@ -39,11 +42,13 @@ public class ComunidadController {
     
 
     @PostMapping
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public Comunidad createComunidad(@RequestBody Comunidad comunidad) {
         return comunidadService.save(comunidad);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<?> modificarComunidad(@PathVariable Long id, @RequestBody Comunidad comunidadNuevo){
         Comunidad modificado = comunidadService.modificarComunidad(id, comunidadNuevo);
         if(modificado != null){

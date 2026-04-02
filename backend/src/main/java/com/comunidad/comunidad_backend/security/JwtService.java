@@ -67,6 +67,17 @@ public class JwtService {
         return fechaCaducidad.before(new Date());
     }
     
+    public Long extraerIdUsuario(String token){
+        return extraerClaims(token).get("idUsuario", Long.class);
+    }
+
+    public Long extraerIdComunidad(String token){
+        return extraerClaims(token).get("idComunidad", Long.class);
+    }
+
+    public String extraerRol(String token){
+        return extraerClaims(token).get("rol", String.class);
+    }
 
 
     

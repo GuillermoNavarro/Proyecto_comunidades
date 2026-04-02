@@ -5,13 +5,14 @@ import com.comunidad.comunidad_backend.dto.CambioPass;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.comunidad.comunidad_backend.entity.Usuario;
 import com.comunidad.comunidad_backend.service.UsuarioService;
-
 
 
 @RestController
@@ -22,11 +23,13 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public List<Usuario> getAllUsuarios(){
         return usuarioService.findAll();
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     ResponseEntity <?> createUsuario(@RequestBody Usuario usuario){
         try{
             Usuario nuevoUsuario = usuarioService.crearUsuario(usuario);
@@ -37,11 +40,13 @@ public class UsuarioController {
     }
 
     @GetMapping("/comunidad/{idComunidad}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public List<Usuario> getUsuarioPorComunidad(@PathVariable Long idComunidad){
         return usuarioService.findByComunidadId(idComunidad);
     }
 
     @GetMapping("/{idUsuario}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Usuario> getUsuarioPorId(@PathVariable Long idUsuario){
         Usuario usuario = usuarioService.findById(idUsuario);
         if(usuario != null){
@@ -51,7 +56,19 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<Usuario> obtenerPerfil(Principal princpal){
+        String email = princpal.getName();
+
+        Usuario usuario = usuarioService.findByEmail(email);
+
+        return ResponseEntity.ok(usuario);
+    }
+    
+    
+
     @DeleteMapping("/{idUsuario}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<String> deleteUsuario(@PathVariable Long idUsuario){
         boolean borrado = usuarioService.deleteUsuario(idUsuario);
 
@@ -63,6 +80,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> modificarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioNuevo) {
         Usuario modificado = usuarioService.modificarUsuario(id, usuarioNuevo);
         if(modificado != null){
@@ -74,6 +92,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/admin/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> modificarUsuarioAdmin(@PathVariable Long id, @RequestBody Usuario usuarioNuevo) {
         Usuario modificado = usuarioService.modificarUsuarioAdmin(id, usuarioNuevo);
         if(modificado != null){
@@ -102,6 +121,7 @@ public class UsuarioController {
     }
 
     @PatchMapping("/admin/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> cambioPassAdmin(@PathVariable Long id){
         try{
             usuarioService.cambioPassAdmin(id);

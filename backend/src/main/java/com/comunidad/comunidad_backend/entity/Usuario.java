@@ -45,8 +45,7 @@ public class Usuario implements UserDetails{
     private String telefono;
 
     /**
-     * La contraseña del usuario encriptada. (actualmente en texto plano, para
-     * pruebas iniciales)
+     * La contraseña del usuario encriptada.
      * Utiliza @JsonProperty con Access.WRITE_ONLY para permitir que se envie en    
      * registros(POST), pero no se incluya en las respuestas JSON (GET).
      */
