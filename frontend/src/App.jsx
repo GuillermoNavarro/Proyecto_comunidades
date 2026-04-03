@@ -5,7 +5,7 @@ import LoginPage from './pages/LoginPage';
 import MenuPage from './pages/MenuPage';
 import MainLayout from './components/MainLayout';
 import { getPerfil } from './services/authService';
-
+import GestionUsuarios from './pages/GestionUsuarios';
 
 function App() {
   const [usuario, setUsuario] = useState(null);
@@ -47,6 +47,16 @@ function App() {
             <Navigate to="/" />
           )
         } />
+
+        <Route path='/usuarios' element={
+          usuario && usuario.rol === 'ADMIN' ? (
+           <MainLayout usuario={usuario}>
+            <GestionUsuarios usuario={usuario}/>           
+           </MainLayout>
+          ) : (
+            <Navigate to="/" />
+          )
+        }/>
 
         
       </Routes>

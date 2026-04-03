@@ -1,4 +1,5 @@
 import { NavLink, UNSAFE_useScrollRestoration } from "react-router-dom";
+import logoComunidad from '../assets/icons/house-logo.svg';
 
 function Sidebar( {usuario} ) {
   const menuItems = [
@@ -18,7 +19,7 @@ function Sidebar( {usuario} ) {
         href="/"
         className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
       >
-        <span className="fs-4 fw-bold text-primary opacity-75">🏢 RedCMS</span>
+        <span className="fs-4 fw-bold text-primary opacity-75"><img src={logoComunidad} alt="logo comunidad" style={{width: '30px', height: '30px' }}/> Tu Comunidad</span>
       </a>
       <hr />
       <ul className="nav nav-pills flex-column mb-auto">
