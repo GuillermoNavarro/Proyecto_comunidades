@@ -48,8 +48,10 @@ public class DocumentoController {
             throw new IllegalArgumentException("Solo se permiten PDF");
         }
 
-        documentoService.crearDocumento(file, documento, idComunidadFinal);
-        return ResponseEntity.ok("guardado");
+        Documento nuevo = documentoService.crearDocumento(file, documento, idComunidadFinal);
+        return ResponseEntity.ok(nuevo);
+       }catch(IllegalArgumentException err){
+        return ResponseEntity.badRequest().body(err.getMessage());
        }catch (Exception err){
         return ResponseEntity.internalServerError().body("Error: " +err.getMessage());
        }

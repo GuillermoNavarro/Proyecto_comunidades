@@ -11,8 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import com.comunidad.comunidad_backend.entity.Comunidad;
 import com.comunidad.comunidad_backend.entity.Usuario;
+import com.comunidad.comunidad_backend.security.JwtService;
 import com.comunidad.comunidad_backend.service.UsuarioService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @RestController
@@ -22,6 +27,9 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private JwtService jwtService;
+
     @GetMapping
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public List<Usuario> getAllUsuarios(){
@@ -30,7 +38,11 @@ public class UsuarioController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    ResponseEntity <?> createUsuario(@RequestBody Usuario usuario){
+    ResponseEntity <?> createUsuario(@RequestBody Usuario usuario, HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        Comunidad idComunidad = new Comunidad();
+        idComunidad.setId(jwtService.extraerIdComunidad(token));
+        usuario.setComunidad(idComunidad);
         try{
             Usuario nuevoUsuario = usuarioService.crearUsuario(usuario);
             return ResponseEntity.ok(nuevoUsuario);
@@ -39,9 +51,11 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/comunidad/{idComunidad}")
+    @GetMapping("/comunidad")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public List<Usuario> getUsuarioPorComunidad(@PathVariable Long idComunidad){
+    public List<Usuario> getUsuarioPorComunidad(HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        Long idComunidad = jwtService.extraerIdComunidad(token);
         return usuarioService.findByComunidadId(idComunidad);
     }
 
@@ -79,10 +93,12 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/modificar")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> modificarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioNuevo) {
-        Usuario modificado = usuarioService.modificarUsuario(id, usuarioNuevo);
+    public ResponseEntity<?> modificarUsuario(@RequestBody Usuario usuarioNuevo, HttpServletRequest request) {
+        String token = request.getHeader("Authorization").substring(7);
+        Long idUsuario = jwtService.extraerIdUsuario(token);
+        Usuario modificado = usuarioService.modificarUsuario(idUsuario, usuarioNuevo);
         if(modificado != null){
             return ResponseEntity.ok(modificado);
         }else{
@@ -103,14 +119,16 @@ public class UsuarioController {
         
     }
     
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> cambioPasswordUser(@PathVariable Long id, @RequestBody CambioPass cambioPass){
+    @PatchMapping("/pass")
+    public ResponseEntity<?> cambioPasswordUser(@RequestBody CambioPass cambioPass, HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        Long idUsuario = jwtService.extraerIdUsuario(token);
         if(cambioPass.getOldPassword() == null || cambioPass.getOldPassword().isBlank() ||
             cambioPass.getNewPassword() == null || cambioPass.getNewPassword().isBlank()){
             return ResponseEntity.status(400).body("Los datos de cambio de contraseña son obligatorios");
         }
         try{
-            usuarioService.cambioPassword(id, cambioPass);
+            usuarioService.cambioPassword(idUsuario, cambioPass);
             return ResponseEntity.ok("Contraseña modificada");
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(401).body(e.getMessage());

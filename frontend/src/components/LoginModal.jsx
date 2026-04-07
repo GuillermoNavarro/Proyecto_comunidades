@@ -7,6 +7,7 @@ function LoginModal({ isOpen, onClose, setUsuario }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [mostrarPass, setMostrarPass] = useState(false);
 
   if (!isOpen) return null;
 
@@ -56,14 +57,25 @@ function LoginModal({ isOpen, onClose, setUsuario }) {
                 <label className="form-label small fw-bold text-muted">
                   Contraseña
                 </label>
+                <div className="input-group">
                 <input
-                  type="password"
+                  type={mostrarPass ? "text" : "password"}
                   className="form-control form-control-lg fs-6"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                <span
+                  className="input-group-text btn btn-light"
+                  type="button"
+                  onClick={() => setMostrarPass(!mostrarPass)}
+                  style={{ cursor:"pointer", borderLeft: "none"}}
+                >
+                  <i className={`bi ${mostrarPass ? 'bi-eye-slash' : 'bi-eye'}`}></i>
+                </span>
+
+                </div>
               </div>
 
               {error && (

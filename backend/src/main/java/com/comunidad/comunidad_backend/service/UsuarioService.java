@@ -2,8 +2,6 @@ package com.comunidad.comunidad_backend.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.comunidad.comunidad_backend.repository.UsuarioRepository;
@@ -22,7 +20,7 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private JavaMailSender javaMailSender;
+    private EmailService emailService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -43,11 +41,7 @@ public class UsuarioService {
         usuario.setCambiarPass(true);
         usuarioRepository.save(usuario);
 
-        SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setTo(usuario.getEmail());
-        mail.setSubject("Alta en Aplicacion");
-        mail.setText("Su usuario ha sido dado de alta en la aplicacion.\nPuede acceder con las siguientes credenciales \n\nUsuario: " + usuario.getEmail() + "\nContraseña: "+ newPassword + "\n\nLa primera vez que acceda sera necesario cambiar la contraseña.");
-        javaMailSender.send(mail);
+        emailService.enviarMailBienvenida(usuario.getEmail(), newPassword);
 
         return usuario;
     }
@@ -157,19 +151,15 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-     public void cambioPassAdmin(Long id){
+    public void cambioPassAdmin(Long id){
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
         String newPassword = UUID.randomUUID().toString().substring(0, 8);
         usuario.setPassword(passwordEncoder.encode(newPassword));
         usuario.setCambiarPass(true);
         usuarioRepository.save(usuario);
-        SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setTo(usuario.getEmail());
-        mail.setSubject("Cambio de Contraseña");
-        mail.setText("A peticion suya se ha cambiado la contrseñade acceso. \nRecuerde que necesitara cambiarla la primera vez que acceda \n\nContraseña provisional: " + newPassword);
-        javaMailSender.send(mail);
 
+        emailService.enviarMailContraseña(usuario.getEmail(), newPassword);
     }
 
 }

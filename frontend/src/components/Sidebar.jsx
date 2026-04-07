@@ -1,28 +1,47 @@
-import { NavLink, UNSAFE_useScrollRestoration } from "react-router-dom";
+import { Link, NavLink, UNSAFE_useScrollRestoration } from "react-router-dom";
 import logoComunidad from '../assets/icons/house-logo.svg';
 
-function Sidebar( {usuario} ) {
+function Sidebar( {usuario, colapsado, setColapsado, movilAbierto, setMovilAbierto} ) {
   const menuItems = [
-    { name: "Tablon de Anuncios", path: "/menu", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
-    { name: "Mis datos", path: "/perfil", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
-    { name: "Cuentas Comunidad", path: "/cuentas", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
-    { name: "Incidencias", path: "/incidencias", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
-    { name: "Gestión Usuarios", path: "/usuarios", roles: ["ADMIN", "SUPER_ADMIN"] }
+    { name: "Tablon de Anuncios", path: "/anuncios", icon: "bi-pin-angle", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
+    { name: "Mis datos", path: "/perfil", icon: "bi-person-circle", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
+    { name: "Cuentas Comunidad", path: "/cuentas", icon: "bi-cash-stack", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
+    { name: "Incidencias", path: "/incidencias", icon:"bi-exclamation-triangle", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
+    { name: "Documentación", path: "/documentos", icon:"bi-files", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
+    { name: "Gestión Usuarios", path: "/usuarios", icon: "bi-people-fill", roles: ["ADMIN", "SUPER_ADMIN"] }
   ];
 
   return (
+    <>
+    {movilAbierto && (
+      <div
+        className="d-md-none position-fixed top-0 start-0 w-100 vh-100 bg-dark opacity-50"
+        style={{zIndex: 1040}}
+        onClick={() => setMovilAbierto(false)}
+        ></div>
+    )}
     <aside
-      className="d-flex flex-column flex-shrink-0 p-3 bg-white border-end"
-      style={{ width: "280px", height: "100vh" }}
+      className={`d-flex flex-column flex-shrink-0 p-3 bg-white border-end transition-all
+          ${colapsado ? 'sidebar-colapsado' : 'sidebar-ancho'}
+          ${movilAbierto ? 'sidebar-movil-abierto' : 'sidebar-movil-cerrado'}`}
+        style={{zIndex: 1050}}
     >
-      <a
-        href="/"
-        className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
-      >
-        <span className="fs-4 fw-bold text-primary opacity-75"><img src={logoComunidad} alt="logo comunidad" style={{width: '30px', height: '30px' }}/> Tu Comunidad</span>
-      </a>
+      <Link
+        to="/menu"
+        className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none overflow-hidden"
+        onClick={() => setMovilAbierto(false)}>
+          <img src={logoComunidad} alt="logo" style={{ width: '30px', height: '30px' }} className="flex-shrink-0" />
+          {!colapsado && <span className="fs-5 fw-bold text-primary opacity-75 ms-2 text-nowrap">Tu Comunidad</span>}
+      </Link>
+      <button 
+          className="btn btn-sm btn-light d-none d-md-block my-2" 
+          onClick={() => setColapsado(!colapsado)}
+        >
+          <i className={`bi ${colapsado ? 'bi-arrow-right' : 'bi-arrow-left'}`}></i>
+      </button>
+     
       <hr />
-      <ul className="nav nav-pills flex-column mb-auto">
+      <ul className="nav nav-pills flex-column mb-auto overflow-hidden">
         {menuItems
           .filter(item => usuario?.rol && item.roles.includes(usuario?.rol))
           .map((item) => (
@@ -30,10 +49,14 @@ function Sidebar( {usuario} ) {
             <NavLink
               to={item.path}
               className={({ isActive }) =>
-                isActive ? "nav-link active bg-primary bg-opacity-75" : "nav-link link-dark"
+                `nav-link d-flex align-items-center ${isActive ? "nav-link active bg-primary bg-opacity-75" : "nav-link link-dark"}`
               }
+              title={colapsado ? item.name : ""}
+              onClick={() => setMovilAbierto(false)}
             >
-              {item.name}
+              <i className={`bi ${item.icon} fs-5`}></i>
+                  {!colapsado && <span className="ms-2 text-nowrap">{item.name}</span>}
+              
             </NavLink>
           </li>
         ))}
@@ -41,16 +64,18 @@ function Sidebar( {usuario} ) {
       <hr />
       <div className="dropdown">
         <button
-          className="btn btn-outline-danger btn-sm w-100"
+          className="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center"
           onClick={() => {
             localStorage.clear();
             window.location.href = "/";
           }}
         >
-          Cerrar Sesión
+          <i className="bi bi-box-arrow-left"></i>
+            {!colapsado && <span className="ms-2">Cerrar Sesión</span>}
         </button>
       </div>
     </aside>
+    </>
   );
 }
 

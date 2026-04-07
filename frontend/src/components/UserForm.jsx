@@ -1,7 +1,7 @@
-import React, {userState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 
 function UserForm({initialData, modo, esAdmin, onsave}){
-    const [formData, setFormData] = userState({
+    const [formData, setFormData] = useState({
         nombre: '',
         apellidos: '',
         telefono: '',
@@ -30,50 +30,52 @@ function UserForm({initialData, modo, esAdmin, onsave}){
                 <div className="col-md-6">
                     <label className="form-label small fw-bold">Nombre</label>
                     <input type="text" name="nombre" className="form-control"
-                        value={formData.nombre || ''} onChange={handleChange}
+                        value={formData.nombre || ''} onChange={btnCambio}
                         readOnly={isReadOnly} required />
                 </div>
                 <div className="col-md-6">
                     <label className="form-label small fw-bold">Apellidos</label>
                     <input type="text" name="apellidos" className="form-control"
-                        value={formData.apellidos || ''} onChange={handleChange}
+                        value={formData.apellidos || ''} onChange={btnCambio}
                         readOnly={isReadOnly} required />
                 </div>
                 <div className="col-md-6">
                     <label className="form-label small fw-bold">Teléfono</label>
                     <input type="text" name="telefono" className="form-control"
-                        value={formData.telefono || ''} onChange={handleChange}
+                        value={formData.telefono || ''} onChange={btnCambio}
                         readOnly={isReadOnly} />
                 </div>
                 <div className="col-md-6">
                     <label className="form-label small fw-bold">DNI</label>
                     <input type="text" name="dni" className="form-control"
-                        value={formData.dni || ''} onChange={handleChange}
+                        value={formData.dni || ''} onChange={btnCambio}
+                        maxLength={9}
+                        pattern='^[0-9]{8}[A-Z]$'
                         readOnly={isReadOnly || !puedeEditarTodo} required />
                 </div>
                 <div className="col-md-6">
                     <label className="form-label small fw-bold">Email (Login)</label>
                     <input type="email" name="email" className="form-control"
-                        value={formData.email || ''} onChange={handleChange}
+                        value={formData.email || ''} onChange={btnCambio}
                         readOnly={isReadOnly || !puedeEditarTodo} required />
                 </div>
                 <div className="col-md-3">
                     <label className="form-label small fw-bold">Puerta</label>
                     <input type="text" name="puerta" className="form-control"
-                        value={formData.puerta || ''} onChange={handleChange}
+                        value={formData.puerta || ''} onChange={btnCambio}
                         readOnly={isReadOnly || !puedeEditarTodo} />
                 </div>
                 <div className="col-md-3">
                     <label className="form-label small fw-bold">Coeficiente</label>
                     <input type="number" step="0.01" name="coeficiente" className="form-control"
-                        value={formData.coeficiente || ''} onChange={handleChange}
+                        value={formData.coeficiente || ''} onChange={btnCambio}
                         readOnly={isReadOnly || !puedeEditarTodo} />
                 </div>
                 {esAdmin && modo !== 'ver' && (
                     <div className="col-md-6">
                         <label className="form-label small fw-bold">Rol</label>
                         <select name="rol" className="form-select" 
-                            value={formData.rol} onChange={handleChange}>
+                            value={formData.rol} onChange={btnCambio}>
                             <option value="USER">Vecino</option>
                             <option value="ADMIN">Administrador</option>
                         </select>
@@ -94,4 +96,6 @@ function UserForm({initialData, modo, esAdmin, onsave}){
         </form>
     )
 
-}
+};
+
+export default UserForm;
