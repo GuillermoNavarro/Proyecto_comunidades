@@ -37,8 +37,15 @@ public class Publicacion {
     @JoinColumn(name = "id_comunidad", nullable = false)
     private Comunidad comunidad;
 
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "id_documento", nullable = true)
+    private Documento documento;
+
     @Column(name = "fecha_creacion", insertable = false, updatable = false)
     private LocalDateTime fechaCreacion;
+
+    @Column(name = "fecha_completado", nullable = true)
+    private LocalDateTime fechaFin;
 
     @Column(name = "estado")
     private boolean estado = true;
@@ -120,9 +127,26 @@ public class Publicacion {
         this.comunidad = comunidad;
     }
 
+    public Documento getDocumento() {
+        return documento;
+    }
+
+
+    public void setDocumento(Documento documento) {
+        this.documento = documento;
+    }
+
 
     public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
+    }
+
+    public LocalDateTime getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(LocalDateTime fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
 
