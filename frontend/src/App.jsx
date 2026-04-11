@@ -9,6 +9,7 @@ import MainLayout from './components/MainLayout';
 import { getPerfil } from './services/authService';
 import GestionUsuarios from './pages/GestionUsuarios';
 import DocumentPage from './pages/DocumentPage';
+import NoticePage from './pages/NoticePage';
 
 function App() {
   const [usuario, setUsuario] = useState(null);
@@ -75,6 +76,16 @@ function App() {
           usuario ? (
           <MainLayout usuario={usuario} setUsuario={setUsuario}>
             <DocumentPage usuario={usuario} />
+          </MainLayout>
+          ) : (
+            <Navigate to="/" />
+          )
+        } />
+
+        <Route path='/anuncios' element={
+          usuario ? (
+          <MainLayout usuario={usuario} setUsuario={setUsuario}>
+            <NoticePage usuario={usuario} />
           </MainLayout>
           ) : (
             <Navigate to="/" />

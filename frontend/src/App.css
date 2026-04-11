@@ -198,6 +198,7 @@
     position: relative !important;
     transform: none !important;
     visibility: visible !important;
+    height: 100dvh !important;
   }
 }
 

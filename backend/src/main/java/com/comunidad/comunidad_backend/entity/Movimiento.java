@@ -50,9 +50,9 @@ public class Movimiento {
     //@Column(name="id_cuota")
     //private Long idCuota;
     @ManyToOne(optional = true)
-    @JoinColumn(name="id_cuota", nullable = true)
-    @JsonIgnoreProperties("comunidad")
-    private Cuota cuota;
+    @JoinColumn(name="id_recibo", nullable = true)
+    @JsonIgnoreProperties({"cuota", "usuario", "comunidad"})
+    private Recibo recibo;
 
 
     public Movimiento(){}
@@ -113,12 +113,12 @@ public class Movimiento {
         this.tipo = tipo;
     }
 
-    public Cuota getCuota() {
-        return cuota;
+    public Recibo getRecibo() {
+        return recibo;
     }
 
-    public void setCuota(Cuota cuota) {
-        this.cuota = cuota;
+    public void setRecibo(Recibo recibo) {
+        this.recibo = recibo;
     }
 
     

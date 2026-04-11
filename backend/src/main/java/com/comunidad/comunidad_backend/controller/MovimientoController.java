@@ -1,22 +1,33 @@
 package com.comunidad.comunidad_backend.controller;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import com.comunidad.comunidad_backend.entity.Comunidad;
 import com.comunidad.comunidad_backend.entity.Movimiento;
+import com.comunidad.comunidad_backend.security.JwtService;
 import com.comunidad.comunidad_backend.service.MovimientoService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @RestController
 @RequestMapping("/api/movimientos")
 public class MovimientoController {
 
-    @Autowired
-    private MovimientoService movimientoService;
+    private final MovimientoService movimientoService;
+    private final JwtService jwtService;
+
+    public MovimientoController(
+        MovimientoService movimientoService,
+        JwtService jwtService
+    ){
+        this.movimientoService = movimientoService;
+        this.jwtService = jwtService;
+    }
 
     @GetMapping
     @PreAuthorize("hasRole('SUPER_ADMIN')")
@@ -26,46 +37,46 @@ public class MovimientoController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public Movimiento createMovimiento(@RequestBody Movimiento movimiento){
+    public Movimiento createMovimiento(@RequestBody Movimiento movimiento, HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        Long idComunidad = jwtService.extraerIdComunidad(token);
+        Comunidad comunidad = new Comunidad();
+        comunidad.setId(idComunidad);
+        movimiento.setComunidad(comunidad);
         return movimientoService.save(movimiento);
     }
 
-    //modificar a claims comunidad
-    @GetMapping("/comunidad/{idComunidad}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public List<Movimiento> getMovientosPorComunidad(@PathVariable Long idComunidad){
+    @GetMapping("/comunidad")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public List<Movimiento> getMovientosPorComunidad(HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        Long idComunidad = jwtService.extraerIdComunidad(token);
         return movimientoService.findByComunidadId(idComunidad);
     }
-    //modificar a claims usuario
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SUPER_ADMIN')")
-    @GetMapping("/usuario/{idUsuario}")
-    public List<Movimiento> getMovimientosPorUsuario(@PathVariable Long idUsuario){
+    
+    
+    @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public List<Movimiento> getMovimientosPorUsuario(HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        Long idUsuario = jwtService.extraerIdUsuario(token);
         return movimientoService.findByUsuarioId(idUsuario);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    
     @GetMapping("/{idMovimiento}")
-    public ResponseEntity<Movimiento> getMovimientoPorId(@PathVariable Long idMovimiento){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getMovimientoPorId(@PathVariable Long idMovimiento, HttpServletRequest request){
         Movimiento movimiento = movimientoService.findById(idMovimiento);
-        if(movimiento != null){
-            return ResponseEntity.ok(movimiento);
-        }else{
+        if(movimiento == null){
             return ResponseEntity.notFound().build();
         }
+        String token = request.getHeader("Authorization").substring(7);
+        Long idComunidad = jwtService.extraerIdComunidad(token);
+        if(!movimiento.getComunidad().getId().equals(idComunidad)){
+            return ResponseEntity.status(403).body("No tienes permiso para ver movimientos de otra comunidad");    
+        }      
+        return ResponseEntity.ok(movimiento);
     }
-    
-
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> modificarMovimiento(@PathVariable Long id, @RequestBody Movimiento movimiento){
-        try{
-            Movimiento movimientoModif = movimientoService.modificarMovimiento(id, movimiento);
-            return ResponseEntity.ok(movimientoModif);
-        }catch (NoSuchElementException e){
-            return ResponseEntity.status(404).body(e.getMessage()); 
-        }
-    }
-    
-    
     
 }

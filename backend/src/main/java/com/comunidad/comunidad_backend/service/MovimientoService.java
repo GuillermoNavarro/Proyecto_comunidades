@@ -1,32 +1,51 @@
 package com.comunidad.comunidad_backend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.comunidad.comunidad_backend.entity.Movimiento;
+import com.comunidad.comunidad_backend.enus.TipoMovimiento;
 import com.comunidad.comunidad_backend.repository.MovimientoRepository;
 
+import jakarta.transaction.Transactional;
+
 import java.util.List;
-import java.util.NoSuchElementException;
+
 
 @Service
 public class MovimientoService {
 
-    @Autowired
-    private MovimientoRepository movimientoRepository;
+    private final ReciboService reciboService;
+    private final MovimientoRepository movimientoRepository;
+
+    public MovimientoService(
+        MovimientoRepository movimientoRepository,
+        ReciboService reciboService
+    ){
+        this.movimientoRepository = movimientoRepository;
+        this.reciboService = reciboService;
+    }
+
 
     public List<Movimiento> findAll() {
         return movimientoRepository.findAll();
     }
 
+    @Transactional
     public Movimiento save(Movimiento movimiento) {
-        return movimientoRepository.save(movimiento);
+        if(movimiento.getRecibo() != null && movimiento.getTipo() != TipoMovimiento.INGRESO){
+            throw new IllegalArgumentException("Solo los movimientos de tipo INGRESO pueden tener recibo asociado");
+        }
+        Movimiento nuevoMovimiento = movimientoRepository.save(movimiento);
+        if(nuevoMovimiento.getRecibo() != null){
+            reciboService.marcarPagado(nuevoMovimiento.getRecibo().getId());
+        }
+        return nuevoMovimiento;
     } 
 
-    public  List<Movimiento> findByComunidadId (Long idComunidad) {
+    public List<Movimiento> findByComunidadId (Long idComunidad) {
         return movimientoRepository.findByComunidadId(idComunidad);
     }
 
-    public  List<Movimiento> findByUsuarioId (Long idUsuario) {
+    public List<Movimiento> findByUsuarioId (Long idUsuario) {
         return movimientoRepository.findByUsuarioId(idUsuario);
     }
 
@@ -34,19 +53,5 @@ public class MovimientoService {
         return movimientoRepository.findById(idMovimiento).orElse(null);
     }
 
-    public Movimiento modificarMovimiento(Long id, Movimiento movimientoModificado){
-        Movimiento movimientoActual = movimientoRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Movimiento no encontrado"));
-        
-        if(movimientoActual.getNombre() != null){
-            movimientoActual.setNombre(movimientoModificado.getNombre());
-        }
-        if(movimientoActual.getUsuario() != null){
-            movimientoActual.setUsuario(movimientoModificado.getUsuario());
-        }
-        if(movimientoActual.getCuota() != null){
-            movimientoActual.setCuota(movimientoModificado.getCuota());
-        }
-        return movimientoRepository.save(movimientoActual);
-    }
     
 }

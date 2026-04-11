@@ -14,7 +14,7 @@ public interface MovimientoRepository extends JpaRepository<Movimiento, Long> {
     
     List<Movimiento> findByComunidadId(Long idComunidad);
     List<Movimiento> findByUsuarioId(Long idUsuario);
-    List<Movimiento> findByCuotaId(Long idCuota);
-    boolean existsByCuotaId(Long idCuota);
+    List<Movimiento> findByReciboCuotaId(Long idCuota);
+    boolean existsByReciboCuotaId(Long idCuota);
 
 }
