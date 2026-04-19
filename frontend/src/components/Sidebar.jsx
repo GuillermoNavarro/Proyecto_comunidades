@@ -3,12 +3,15 @@ import logoComunidad from '../assets/icons/house-logo.svg';
 
 function Sidebar( {usuario, colapsado, setColapsado, movilAbierto, setMovilAbierto} ) {
   const menuItems = [
-    { name: "Tablon de Anuncios", path: "/anuncios", icon: "bi-pin-angle", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
+    { name: "Tablon de Anuncios", path: "/anuncios", icon: "bi-pin-angle", roles: ["USER", "ADMIN"] },
     { name: "Mis datos", path: "/perfil", icon: "bi-person-circle", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
-    { name: "Cuentas Comunidad", path: "/cuentas", icon: "bi-cash-stack", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
-    { name: "Incidencias", path: "/incidencias", icon:"bi-exclamation-triangle", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
-    { name: "Documentación", path: "/documentos", icon:"bi-files", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
-    { name: "Gestión Usuarios", path: "/usuarios", icon: "bi-people-fill", roles: ["ADMIN", "SUPER_ADMIN"] }
+    { name: "Mis Recibos", path: "/recibos", icon: "bi-cash-stack", roles: ["USER", "ADMIN"] },
+    { name: "Gestión de Cuotas", path:"/cuotas", icon: "bi-receipt-cutoff",roles: ["ADMIN"] },
+    { name: "Cuentas Comunidad", path: "/cuentas", icon: "bi-bar-chart-line", roles: ["USER", "ADMIN"] },
+    /*{ name: "Incidencias", path: "/incidencias", icon:"bi-exclamation-triangle", roles: ["USER", "ADMIN"] },*/
+    { name: "Documentación", path: "/documentos", icon:"bi-files", roles: ["USER", "ADMIN"] },
+    { name: "Gestión Usuarios", path: "/usuarios", icon: "bi-people-fill", roles: ["ADMIN", "SUPER_ADMIN"] },
+    /*{ name: "Gestion Comunidades", path: "/comunidades", icon:"bi-house-gear-fill", roles: ["SUPER_ADMIN"]}*/
   ];
 
   return (

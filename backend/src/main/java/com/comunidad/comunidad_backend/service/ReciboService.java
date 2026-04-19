@@ -89,4 +89,9 @@ public class ReciboService {
         }
     }
 
+    public List<Recibo> listarRecibosPorCuotas(Long idCuota, Long idComunidad){
+        List<Recibo> recibo = reciboRepository.findByCuotaIdAndComunidadId(idCuota, idComunidad);
+        return recibo;
+    }
+
 }

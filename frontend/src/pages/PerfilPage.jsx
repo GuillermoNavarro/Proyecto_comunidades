@@ -11,7 +11,7 @@ function PerfilPage({ usuario, setUsuario }){
         try{
             await modificarUser(datosActualizados);
         }catch(err){
-            console.erro("Error al modificar ", err)
+            console.error("Error al modificar ", err)
         }
         console.log ("datos enviados");
 
@@ -19,46 +19,60 @@ function PerfilPage({ usuario, setUsuario }){
         setModo('ver');
     }
     return(
-        <div className="perfil-container">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2>Mis Datos</h2>
+        <div className="container-fluid py-2">
+            <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                <div>
+                    <h2 className="h3 mb-1 text-dark fw-bold">Mis Perfil</h2>
+                    <p className="text-muted small mb-0">Consulta y actualiza tus datos personales</p>
+                </div>
                 <div className='d-flex gap-2'>
-                <button 
-                    className="btn btn-outline-secondary"
-                    onClick={() => setMostrarPass(true)}
-                    >
-                    <i className="bi bi-key me-2"></i>Cambio Contraseña
-                </button>
-                {modo === 'ver' &&(
-                    <button
-                        className='btn btn-outline-primary'
-                        onClick={() => setModo('editar')}
-                        ><i className="bi bi-pencil me-2"></i>Modificar</button>
-                )} 
+                    <button 
+                        className="btn btn-outline-secondary d-flex align-items-center shadow-sm"
+                        onClick={() => setMostrarPass(true)}
+                        >
+                        <i className="bi bi-key me-2"></i>
+                        <span className="d-none d-sm-inline">Contraseña</span>
+                    </button>
+                    {modo === 'ver' &&(
+                        <button
+                            className='btn btn-primary d-flex align-items-center shadow-sm'
+                            onClick={() => setModo('editar')}
+                            ><i className="bi bi-pencil me-2"></i>
+                            <span className="d-none d-sm-inline">Modificar</span>
+                        </button>
+                    )} 
                 </div>               
             </div>
-            <UserForm
-                initialData={usuario}
-                modo={modo}
-                esAdmin = {false}
-                onsave={guardar}
-            />
-            {modo === 'editar' && (
-                <button 
-                    className="btn btn-link text-muted mt-2" 
-                    onClick={() => setModo('ver')}>
-                    Cancelar
-                </button>
-            )}
+            <div className="row justify-content-center g-4">
+                <div className="col-12 col-lg-12">
+                    <div className="card shadow-sm border-0">
+                        <div className="card-body p-4 p-md-5">    
+                            <UserForm
+                                initialData={usuario}
+                                modo={modo}
+                                esAdmin = {false}
+                                onsave={guardar}
+                            />
+                            {modo === 'editar' && (
+                                <div className="text-left mt-4 pt-3 border-top">
+                                    <button 
+                                        className="btn btn-link text-muted mt-2" 
+                                        onClick={() => setModo('ver')}>
+                                        <i className="bi bi-x-circle me-1"></i> Cancelar edición
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
             <PassModal
                 show={mostrarPass}
                 esForzado={false}
                 onHide={() => setMostrarPass(false)}
             />
-
-
         </div>
-    )
+    );
 }
 
 export default PerfilPage;

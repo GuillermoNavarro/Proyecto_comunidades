@@ -62,6 +62,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
         if(usuario != null){
             usuario.setEstado(false);
+            usuario.setCoeficiente(0.0);
             usuarioRepository.save(usuario);
             return true;
         }

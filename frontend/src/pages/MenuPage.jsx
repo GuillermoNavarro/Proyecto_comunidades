@@ -1,12 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 function MenuPage() {
-  const navigate = useNavigate();
-
-  const cerrarSesion = () => {
-    localStorage.removeItem('token'); // Limpiamos el rastro
-    navigate('/');
-  };
+ 
 
   return (
     <div style={{ padding: '20px' }}>

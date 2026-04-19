@@ -12,6 +12,17 @@ export const getUsuarios = async () => {
     return usuarios.data;
 }
 
+export const getUsuariosSuper = async () => {
+    const token = localStorage.getItem('token');
+    const usuarios = await axios.get(`${API_URL}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    return usuarios.data;
+}
+
 export const bajaUsuario = async(id) => {
     const token = localStorage.getItem('token');
     const respuesta = await axios.delete(`${API_URL}/${id}`, {

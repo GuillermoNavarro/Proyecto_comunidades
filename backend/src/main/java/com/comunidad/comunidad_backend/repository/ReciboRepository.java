@@ -18,6 +18,8 @@ public interface ReciboRepository extends JpaRepository<Recibo, Long> {
 
     List<Recibo> findByCuotaId(Long idCuota);
 
+    List<Recibo> findByCuotaIdAndComunidadId(Long idCuota, Long idComunidad);
+
     List<Recibo> findByUsuarioIdAndComunidadIdAndEstadoRecibo(Long idUsuario, Long idComunidad, EstadoRecibo estadoRecibo);
 
     List<Recibo> findByComunidadIdAndEstadoReciboAndCuotaFechaVencimientoBefore(Long idComunidad, EstadoRecibo estadoRecibo, LocalDate fechaActual);

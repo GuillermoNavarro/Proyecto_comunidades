@@ -10,6 +10,9 @@ import { getPerfil } from './services/authService';
 import GestionUsuarios from './pages/GestionUsuarios';
 import DocumentPage from './pages/DocumentPage';
 import NoticePage from './pages/NoticePage';
+import RecibosPage from './pages/RecibosPage';
+import CuentasPage from './pages/CuentasPage';
+import CuotasPage from './pages/CuotasPage';
 
 function App() {
   const [usuario, setUsuario] = useState(null);
@@ -53,7 +56,7 @@ function App() {
         } />
 
         <Route path='/usuarios' element={
-          usuario && usuario.rol === 'ADMIN' ? (
+          usuario && (usuario.rol === 'ADMIN' || usuario.rol === 'SUPER_ADMIN') ? (
            <MainLayout usuario={usuario} setUsuario={setUsuario}>
             <GestionUsuarios usuario={usuario}/>           
            </MainLayout>
@@ -86,6 +89,46 @@ function App() {
           usuario ? (
           <MainLayout usuario={usuario} setUsuario={setUsuario}>
             <NoticePage usuario={usuario} />
+          </MainLayout>
+          ) : (
+            <Navigate to="/" />
+          )
+        } />
+
+        <Route path='/recibos' element={
+          usuario ? (
+          <MainLayout usuario={usuario} setUsuario={setUsuario}>
+            <RecibosPage usuario={usuario} />
+          </MainLayout>
+          ) : (
+            <Navigate to="/" />
+          )
+        } />
+
+        <Route path='/cuentas' element={
+          usuario ? (
+          <MainLayout usuario={usuario} setUsuario={setUsuario}>
+            <CuentasPage usuario={usuario} />
+          </MainLayout>
+          ) : (
+            <Navigate to="/" />
+          )
+        } />
+
+        <Route path='/cuotas' element={
+          usuario && (usuario.rol === 'ADMIN' || usuario.rol === 'SUPER_ADMIN') ? (
+          <MainLayout usuario={usuario} setUsuario={setUsuario}>
+            <CuotasPage usuario={usuario} />
+          </MainLayout>
+          ) : (
+            <Navigate to="/" />
+          )
+        } />
+
+        <Route path='/comunidades' element={
+          usuario && (usuario.rol === 'SUPER_ADMIN') ? (
+          <MainLayout usuario={usuario} setUsuario={setUsuario}>
+            <CuotasPage usuario={usuario} />
           </MainLayout>
           ) : (
             <Navigate to="/" />

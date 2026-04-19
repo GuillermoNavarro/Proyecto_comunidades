@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { crearUsuario, getUsuarios } from "../services/usuarioService";
+import { crearUsuario, getUsuarios, getUsuariosSuper } from "../services/usuarioService";
 import { bajaUsuario } from "../services/usuarioService";
 import { modificarUsuarioAdmin } from "../services/usuarioService";
 import { cambioPassAdmin } from "../services/usuarioService";
@@ -16,15 +16,23 @@ function GestionUsuarios({ usuario }) {
   const [mostrarModal, setMostrarModal] = useState(false);
 
   useEffect(() => {
-    getUsuarios()
-      .then((datos) => {
+    const cargarDatos = async () =>{
+      try{
+        let datos;
+        if(usuario.rol === "SUPER_ADMIN"){
+          datos = await getUsuariosSuper();
+        }else{
+          datos = await getUsuarios();
+        }
         setUsuarios(datos);
+      }catch(error){
+        console.error("Error al cargar los usuarios", error);
+      }finally{
         setCargando(false);
-      })
-      .catch(() => {
-        setCargando(false);
-      });
-  }, []);
+      }
+    };
+    cargarDatos();
+  }, [usuario.rol]);
 
   if (cargando)
     return (

@@ -17,6 +17,7 @@ import java.util.List;
 
 
 
+
 @RestController
 @RequestMapping("/api/recibos")
 public class ReciboController {
@@ -69,6 +70,18 @@ public class ReciboController {
         List<Recibo> lista = reciboService.listarPendientePorUsuario(idUsuario, idComunidad);
 
         return ResponseEntity.ok(lista);    
-    }    
+    }
+    
+    @GetMapping("/cuota/{idCuota}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getReciboCuotaId(@PathVariable Long idCuota, HttpServletRequest request){
+        String token = request.getHeader("Authorization").substring(7);
+        Long idComunidad = jwtService.extraerIdComunidad(token);
+
+        List<Recibo> lista = reciboService.listarRecibosPorCuotas(idCuota, idComunidad);
+
+        return ResponseEntity.ok(lista);    
+    }
+    
     
 }
