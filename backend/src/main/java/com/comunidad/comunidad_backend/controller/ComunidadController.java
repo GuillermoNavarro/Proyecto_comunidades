@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import com.comunidad.comunidad_backend.dto.ActivoComunidad;
 import com.comunidad.comunidad_backend.entity.Comunidad;
 import com.comunidad.comunidad_backend.service.ComunidadService;
 
@@ -28,6 +30,14 @@ public class ComunidadController {
     public List<Comunidad> getAllComunidades() {
         return comunidadService.findAll();
     }
+
+    @GetMapping("/activos")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public List<ActivoComunidad> getComunidadesActivos() {
+        return comunidadService.comunidadesActivos();
+    }
+
+
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")

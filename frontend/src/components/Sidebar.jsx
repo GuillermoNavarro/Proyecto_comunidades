@@ -11,7 +11,7 @@ function Sidebar( {usuario, colapsado, setColapsado, movilAbierto, setMovilAbier
     /*{ name: "Incidencias", path: "/incidencias", icon:"bi-exclamation-triangle", roles: ["USER", "ADMIN"] },*/
     { name: "Documentación", path: "/documentos", icon:"bi-files", roles: ["USER", "ADMIN"] },
     { name: "Gestión Usuarios", path: "/usuarios", icon: "bi-people-fill", roles: ["ADMIN", "SUPER_ADMIN"] },
-    /*{ name: "Gestion Comunidades", path: "/comunidades", icon:"bi-house-gear-fill", roles: ["SUPER_ADMIN"]}*/
+    { name: "Gestion Comunidades", path: "/comunidades", icon:"bi-house-gear-fill", roles: ["SUPER_ADMIN"]}
   ];
 
   return (

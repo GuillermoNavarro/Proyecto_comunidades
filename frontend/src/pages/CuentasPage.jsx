@@ -30,8 +30,9 @@ function CuentasPage({usuario}){
 
     const btnGuardarMovimiento = async (datos) => {
         try{
-            await crearMovimiento(datos);
+            const nuevoMovimiento = await crearMovimiento(datos);
             setMostrarModal(false);
+            setMovimentos((prevMovimientos) => [...prevMovimientos, nuevoMovimiento]);
             alert("¡Movimiento registrado con exito!");
         }catch (error){
             console.error("Error al guardar", error);

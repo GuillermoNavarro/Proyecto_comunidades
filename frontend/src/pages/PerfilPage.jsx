@@ -22,7 +22,7 @@ function PerfilPage({ usuario, setUsuario }){
         <div className="container-fluid py-2">
             <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
                 <div>
-                    <h2 className="h3 mb-1 text-dark fw-bold">Mis Perfil</h2>
+                    <h2 className="h3 mb-1 text-dark fw-bold">Mi Perfil</h2>
                     <p className="text-muted small mb-0">Consulta y actualiza tus datos personales</p>
                 </div>
                 <div className='d-flex gap-2'>

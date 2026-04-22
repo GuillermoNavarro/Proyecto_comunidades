@@ -13,6 +13,7 @@ import NoticePage from './pages/NoticePage';
 import RecibosPage from './pages/RecibosPage';
 import CuentasPage from './pages/CuentasPage';
 import CuotasPage from './pages/CuotasPage';
+import ComunidadPage from './pages/ComunidadPage';
 
 function App() {
   const [usuario, setUsuario] = useState(null);
@@ -128,7 +129,7 @@ function App() {
         <Route path='/comunidades' element={
           usuario && (usuario.rol === 'SUPER_ADMIN') ? (
           <MainLayout usuario={usuario} setUsuario={setUsuario}>
-            <CuotasPage usuario={usuario} />
+            <ComunidadPage usuario={usuario} />
           </MainLayout>
           ) : (
             <Navigate to="/" />

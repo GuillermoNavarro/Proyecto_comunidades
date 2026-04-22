@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import com.comunidad.comunidad_backend.entity.Comunidad;
 import com.comunidad.comunidad_backend.repository.ComunidadRepository;
+import com.comunidad.comunidad_backend.dto.ActivoComunidad;
 
 @Service
 public class ComunidadService {
@@ -14,6 +15,10 @@ public class ComunidadService {
 
     public List<Comunidad> findAll() {
         return comunidadRepository.findAll();
+    }
+
+    public List<ActivoComunidad> comunidadesActivos() {
+        return comunidadRepository.obtenerComunidadesConActivos();
     }
 
     public Comunidad save(Comunidad comunidad) {

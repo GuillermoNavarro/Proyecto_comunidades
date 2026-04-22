@@ -105,7 +105,7 @@ function GestionUsuarios({ usuario }) {
       } else {
         await modificarUsuarioAdmin(datosForm.id, datosForm);
         const listaActualizada = usuarios.map((u) =>
-          u.id === usuario.id ? { ...u, ...datosForm } : u,
+          u.id === datosForm.id ? { ...u, ...datosForm } : u,
         );
         setUsuarios(listaActualizada);
       }
