@@ -38,7 +38,7 @@ function App() {
   if (cargando) return <div style={{textAlign: 'center', marginTop: '50px'}}>Conectando con el servidor... </div>;
 
   return (
-    <Router>
+    <Router basename='/'> 
       <Routes>
         {/*Parte publica*/}
         <Route path="/" element={

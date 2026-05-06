@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.comunidad</groupId>
-	<artifactId>cominidad-backend</artifactId>
+	<artifactId>comunidad-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>comunidad-backend</name>
 	<description>Demo project for Spring Boot</description>

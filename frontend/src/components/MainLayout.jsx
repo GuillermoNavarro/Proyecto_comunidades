@@ -26,6 +26,7 @@ function MainLayout({ children, usuario, setUsuario }) {
         {/* Lado Izquierdo */}
         <Sidebar 
           usuario={usuario}
+          setUsuario={setUsuario}
           colapsado={colapsado}
           setColapsado={setColapsado}
           movilAbierto={movilAbierto}

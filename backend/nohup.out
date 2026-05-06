@@ -1,0 +1,45 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.5)
+
+2026-04-23T16:17:56.500Z  INFO 205187 --- [comunidad-backend] [           main] c.c.c.ComunidadBackendApplication        : Starting ComunidadBackendApplication v0.0.1-SNAPSHOT using Java 25.0.2 with PID 205187 (/home/guille/proyectos/Proyecto_comunidades/backend/target/comunidad-backend-0.0.1-SNAPSHOT.jar started by guille in /home/guille/proyectos/Proyecto_comunidades/backend)
+2026-04-23T16:17:56.504Z  INFO 205187 --- [comunidad-backend] [           main] c.c.c.ComunidadBackendApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-04-23T16:17:57.704Z  INFO 205187 --- [comunidad-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-23T16:17:57.777Z  INFO 205187 --- [comunidad-backend] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 7 JPA repository interfaces.
+2026-04-23T16:17:58.553Z  INFO 205187 --- [comunidad-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-04-23T16:17:58.569Z  INFO 205187 --- [comunidad-backend] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-23T16:17:58.570Z  INFO 205187 --- [comunidad-backend] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-04-23T16:17:58.602Z  INFO 205187 --- [comunidad-backend] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2020 ms
+2026-04-23T16:17:58.816Z  INFO 205187 --- [comunidad-backend] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-04-23T16:17:58.870Z  INFO 205187 --- [comunidad-backend] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-04-23T16:17:59.380Z  INFO 205187 --- [comunidad-backend] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-23T16:17:59.416Z  INFO 205187 --- [comunidad-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-23T16:17:59.555Z  INFO 205187 --- [comunidad-backend] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@2d3111a1
+2026-04-23T16:17:59.556Z  INFO 205187 --- [comunidad-backend] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-23T16:17:59.583Z  WARN 205187 --- [comunidad-backend] [           main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-23T16:17:59.601Z  INFO 205187 --- [comunidad-backend] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mariadb://localhost/comunidad_vecinos?user=guille&password=***]
+	Database driver: MariaDB Connector/J
+	Database dialect: MariaDBDialect
+	Database version: 12.2.2
+	Default catalog/schema: comunidad_vecinos/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-23T16:18:00.564Z  INFO 205187 --- [comunidad-backend] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-23T16:18:00.623Z  INFO 205187 --- [comunidad-backend] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-23T16:18:00.688Z  INFO 205187 --- [comunidad-backend] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-23T16:18:02.085Z  WARN 205187 --- [comunidad-backend] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-23T16:18:02.171Z  INFO 205187 --- [comunidad-backend] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2026-04-23T16:18:02.359Z  INFO 205187 --- [comunidad-backend] [           main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-04-23T16:18:02.755Z  INFO 205187 --- [comunidad-backend] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-04-23T16:18:02.768Z  INFO 205187 --- [comunidad-backend] [           main] c.c.c.ComunidadBackendApplication        : Started ComunidadBackendApplication in 6.76 seconds (process running for 7.347)

@@ -1,10 +1,10 @@
-package com.comunidad.cominidad_backend;
+package com.comunidad.comunidad_backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CominidadBackendApplicationTests {
+class ComunidadBackendApplicationTests {
 
 	@Test
 	void contextLoads() {

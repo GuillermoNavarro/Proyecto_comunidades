@@ -1,7 +1,8 @@
-import { Link, NavLink, UNSAFE_useScrollRestoration } from "react-router-dom";
+import { Link, NavLink, useNavigate, UNSAFE_useScrollRestoration } from "react-router-dom";
 import logoComunidad from '../assets/icons/house-logo.svg';
 
-function Sidebar( {usuario, colapsado, setColapsado, movilAbierto, setMovilAbierto} ) {
+function Sidebar( {usuario, setUsuario, colapsado, setColapsado, movilAbierto, setMovilAbierto} ) {
+  const navigate = useNavigate();
   const menuItems = [
     { name: "Tablon de Anuncios", path: "/anuncios", icon: "bi-pin-angle", roles: ["USER", "ADMIN"] },
     { name: "Mis datos", path: "/perfil", icon: "bi-person-circle", roles: ["USER", "ADMIN", "SUPER_ADMIN"] },
@@ -70,7 +71,8 @@ function Sidebar( {usuario, colapsado, setColapsado, movilAbierto, setMovilAbier
           className="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center"
           onClick={() => {
             localStorage.clear();
-            window.location.href = "/";
+            setUsuario(null);
+            navigate("/");
           }}
         >
           <i className="bi bi-box-arrow-left"></i>
