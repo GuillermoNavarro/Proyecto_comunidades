@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.math.BigDecimal;
 
 import com.comunidad.comunidad_backend.enus.Rol;
 //import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -73,7 +74,7 @@ public class Usuario implements UserDetails{
     private String email;
 
     @Column(name = "coeficiente")
-    private Double coeficiente;
+    private BigDecimal coeficiente;
 
     /**
      * indica si el usuario está activo o ha sido "borrado" lógicamente.
@@ -174,11 +175,11 @@ public class Usuario implements UserDetails{
         this.email = email;
     }
 
-    public Double getCoeficiente() {
+    public BigDecimal getCoeficiente() {
         return coeficiente;
     }
 
-    public void setCoeficiente(Double coeficiente) {
+    public void setCoeficiente(BigDecimal coeficiente) {
         this.coeficiente = coeficiente;
     }
 

@@ -12,6 +12,7 @@ import com.comunidad.comunidad_backend.enus.Rol;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.math.BigDecimal;
 
 @Service
 public class UsuarioService {
@@ -62,7 +63,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
         if(usuario != null){
             usuario.setEstado(false);
-            usuario.setCoeficiente(0.0);
+            usuario.setCoeficiente(BigDecimal.ZERO);
             usuarioRepository.save(usuario);
             return true;
         }

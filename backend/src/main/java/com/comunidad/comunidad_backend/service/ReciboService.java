@@ -52,11 +52,10 @@ public class ReciboService {
         List<Usuario> vecinos = usuarioRepository.findByComunidadId(cuota.getComunidad().getId());
 
         for(Usuario vecino : vecinos){
-            if(vecino.getCoeficiente() == null || vecino.getCoeficiente() <= 0){
+            if(vecino.getCoeficiente() == null || vecino.getCoeficiente().compareTo(BigDecimal.ZERO) <= 0){
                 continue;
             }
-            BigDecimal coeficiente  = BigDecimal.valueOf(vecino.getCoeficiente());
-            generarRecibo(vecino, cuota, coeficiente);
+            generarRecibo(vecino, cuota, vecino.getCoeficiente());
         }        
     }
 
