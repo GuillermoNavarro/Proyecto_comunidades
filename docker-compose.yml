@@ -1,0 +1,59 @@
+services:
+  database:
+    image: mariadb:11.4
+    container_name: app-comunidades-db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./data_mariadb:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - db-net
+
+  backend:
+    build: 
+      context: ./backend
+      target: production
+    container_name: app-comunidades-backend
+    restart: always
+    depends_on:
+      database:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    networks:
+      - web-net
+      - db-net
+    volumes:
+      - ./uploads:/datos
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_URL_DOCUMENTS=${VITE_URL_DOCUMENTS}
+      target: production
+    container_name: app-comunidades-frontend
+    restart: always
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    networks:
+      - web-net
+    volumes:
+      - ./uploads:/datos:ro
+
+networks:
+  web-net:
+  db-net:
+
+

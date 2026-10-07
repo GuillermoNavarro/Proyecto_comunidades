@@ -1,0 +1,56 @@
+services:
+  database:
+    container_name: comunidades-db-dev
+    volumes:
+      - /var/lib/mysql
+      - ./seed-dev.sql:/docker-entrypoint-initdb.d/02-seed-dev.sql
+    restart: "no"
+  
+  backend:
+    build: 
+      context: ./backend
+      target: develop
+    container_name: comunidades-backend-dev
+    environment:
+      SPRING_PROFILES_ACTIVE: dev    
+    volumes:
+      - /datos
+      - ./backend:/app/backend
+      - maven_cache:/root/.m2
+    ports:
+      - "8080:8080"
+    networks:
+      - mail-net
+    restart: "no"
+
+  frontend:
+    build:
+      context: ./frontend
+      target: develop
+    container_name: comunidades-frontend-dev
+    volumes:
+      - /datos
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    ports: !override
+      - "5173:5173"
+    restart: "no"
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: comunidades-mailpit-dev
+    restart: "no"
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      - MP_MAX_MESSAGES=500
+      - TZ=Europe/Madrid
+    networks:
+      - mail-net
+
+networks:
+  mail-net:
+
+volumes:
+  maven_cache:
