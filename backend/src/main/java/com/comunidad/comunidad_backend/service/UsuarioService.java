@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.comunidad.comunidad_backend.repository.UsuarioRepository;
 import com.comunidad.comunidad_backend.dto.CambioPass;
 import com.comunidad.comunidad_backend.entity.Usuario;
-import com.comunidad.comunidad_backend.enus.Rol;
+import com.comunidad.comunidad_backend.enums.Rol;
 
 import java.util.List;
 import java.util.NoSuchElementException;

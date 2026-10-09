@@ -3,7 +3,7 @@ package com.comunidad.comunidad_backend.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.comunidad.comunidad_backend.enus.TipoCuota;
+import com.comunidad.comunidad_backend.enums.TipoCuota;
 
 import jakarta.persistence.*;
 

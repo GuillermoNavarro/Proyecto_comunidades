@@ -2,7 +2,7 @@ package com.comunidad.comunidad_backend.entity;
 
 import java.time.LocalDateTime;
 
-import com.comunidad.comunidad_backend.enus.TipoPublicacion;
+import com.comunidad.comunidad_backend.enums.TipoPublicacion;
 
 import jakarta.persistence.*;
 

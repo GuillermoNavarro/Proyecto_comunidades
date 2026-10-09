@@ -8,7 +8,7 @@ import com.comunidad.comunidad_backend.repository.UsuarioRepository;
 import com.comunidad.comunidad_backend.entity.Recibo;
 import com.comunidad.comunidad_backend.entity.Cuota;
 import com.comunidad.comunidad_backend.entity.Usuario;
-import com.comunidad.comunidad_backend.enus.EstadoRecibo;
+import com.comunidad.comunidad_backend.enums.EstadoRecibo;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

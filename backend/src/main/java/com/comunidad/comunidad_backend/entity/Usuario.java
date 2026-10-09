@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.math.BigDecimal;
 
-import com.comunidad.comunidad_backend.enus.Rol;
+import com.comunidad.comunidad_backend.enums.Rol;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

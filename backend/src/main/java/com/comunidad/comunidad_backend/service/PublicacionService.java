@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.comunidad.comunidad_backend.repository.PublicacionRepository;
 import com.comunidad.comunidad_backend.entity.Publicacion;
-import com.comunidad.comunidad_backend.enus.TipoPublicacion;
+import com.comunidad.comunidad_backend.enums.TipoPublicacion;
 
 import java.io.IOException;
 import java.util.List;

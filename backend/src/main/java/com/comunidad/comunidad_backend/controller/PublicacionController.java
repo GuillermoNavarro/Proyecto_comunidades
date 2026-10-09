@@ -5,7 +5,7 @@ import com.comunidad.comunidad_backend.service.PublicacionService;
 import com.comunidad.comunidad_backend.entity.Comunidad;
 import com.comunidad.comunidad_backend.entity.Publicacion;
 import com.comunidad.comunidad_backend.entity.Usuario;
-import com.comunidad.comunidad_backend.enus.TipoPublicacion;
+import com.comunidad.comunidad_backend.enums.TipoPublicacion;
 
 import jakarta.servlet.http.HttpServletRequest;
 
