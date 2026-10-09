@@ -16,11 +16,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/login")
 public class AuthController {
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
+    private final UsuarioService usuarioService;
 
-    @Autowired
-    private UsuarioService usuarioService;
+    public AuthController(
+        JwtService jwtService,
+        UsuarioService usuarioService
+    ){
+        this.jwtService = jwtService;
+        this.usuarioService = usuarioService;
+    }
 
     @PostMapping
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {

@@ -9,8 +9,9 @@ import java.util.List;
 import java.math.BigDecimal;
 
 import com.comunidad.comunidad_backend.enus.Rol;
-//import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 
@@ -66,8 +67,10 @@ public class Usuario implements UserDetails{
      * Relación Many-to-One con la entidad Comunidad.
      * Un usuario pertenece a una única comunidad.
      */
+    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+    //@ManyToOne(optional = false, fetch = FetchType.LAZY)
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_comunidad", nullable = false) 
+    @JoinColumn(name = "id_comunidad", nullable = false)
     private Comunidad comunidad;   
 
     @Column(name = "email")
