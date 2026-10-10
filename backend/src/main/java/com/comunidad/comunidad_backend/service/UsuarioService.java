@@ -7,6 +7,8 @@ import com.comunidad.comunidad_backend.repository.UsuarioRepository;
 import com.comunidad.comunidad_backend.dto.CambioPass;
 import com.comunidad.comunidad_backend.entity.Usuario;
 import com.comunidad.comunidad_backend.enums.Rol;
+import com.comunidad.comunidad_backend.exception.CredencialesInvalidasException;
+import com.comunidad.comunidad_backend.exception.RecursoDuplicadoException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -36,7 +38,10 @@ public class UsuarioService {
 
     public Usuario crearUsuario(Usuario usuario) {
         if(usuarioRepository.findByDni(usuario.getDni()).isPresent()){
-            throw new IllegalArgumentException("Ya existe un usuario con el DNI:" + usuario.getDni());
+            throw new RecursoDuplicadoException("Ya existe un usuario con el DNI:" + usuario.getDni());
+        }
+        if(usuarioRepository.findByEmail(usuario.getEmail()).isPresent()){
+            throw new RecursoDuplicadoException("Ya existe un usuario con el email:" + usuario.getEmail());
         }
         usuario.setId(null);
         usuario.setRol(Rol.USER);
@@ -57,30 +62,26 @@ public class UsuarioService {
 
     public Usuario findById(Long id, Usuario usuarioLogado){
         if(usuarioLogado.getRol() == Rol.SUPER_ADMIN){
-            return usuarioRepository.findById(id).orElse(null);
+            return usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
         }else{
-            return usuarioRepository.findByIdAndComunidadId(id, usuarioLogado.getComunidad().getId()).orElse(null);
+            return usuarioRepository.findByIdAndComunidadId(id, usuarioLogado.getComunidad().getId()).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
         }
     }
 
     public Usuario findByEmail(String email){
-        return usuarioRepository.findByEmail(email).orElse(null);
+        return usuarioRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
     }
     
-    public boolean deleteUsuario(Long idUsuario, Usuario usuarioLogado) {
+    public void deleteUsuario(Long idUsuario, Usuario usuarioLogado) {
         Usuario usuario;
         if(usuarioLogado.getRol() == Rol.SUPER_ADMIN){
-            usuario = usuarioRepository.findById(idUsuario).orElse(null);
+            usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
         }else{
-            usuario = usuarioRepository.findByIdAndComunidadId(idUsuario, usuarioLogado.getComunidad().getId()).orElse(null);
+            usuario = usuarioRepository.findByIdAndComunidadId(idUsuario, usuarioLogado.getComunidad().getId()).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
         }
-        if(usuario != null){
-            usuario.setEstado(false);
-            usuario.setCoeficiente(BigDecimal.ZERO);
-            usuarioRepository.save(usuario);
-            return true;
-        }
-        return false;
+        usuario.setEstado(false);
+        usuario.setCoeficiente(BigDecimal.ZERO);
+        usuarioRepository.save(usuario);
     }
     
     public Usuario login(String email, String password){
@@ -159,7 +160,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
         if(!passwordEncoder.matches(cambioPass.getOldPassword(), usuario.getPassword())){
-            throw new IllegalArgumentException("Contraseña incorrecta");
+            throw new CredencialesInvalidasException("Contraseña incorrecta");
         }
 
         usuario.setPassword(passwordEncoder.encode(cambioPass.getNewPassword()));

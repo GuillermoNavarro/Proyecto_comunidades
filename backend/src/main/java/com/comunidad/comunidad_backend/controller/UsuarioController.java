@@ -4,7 +4,6 @@ import com.comunidad.comunidad_backend.dto.CambioPass;
 
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.security.Principal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.comunidad.comunidad_backend.entity.Comunidad;
 import com.comunidad.comunidad_backend.entity.Usuario;
-import com.comunidad.comunidad_backend.security.JwtService;
 import com.comunidad.comunidad_backend.service.UsuarioService;
 
 
@@ -24,14 +22,11 @@ import com.comunidad.comunidad_backend.service.UsuarioService;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
-    private final JwtService jwtService;
 
     public UsuarioController(
-        UsuarioService usuarioService, 
-        JwtService jwtService
+        UsuarioService usuarioService
     ){
         this.usuarioService = usuarioService;
-        this.jwtService = jwtService;
     }
 
     @GetMapping
@@ -46,12 +41,8 @@ public class UsuarioController {
         Comunidad idComunidad = new Comunidad();
         idComunidad.setId(usuarioLogado.getComunidad().getId());
         usuario.setComunidad(idComunidad);
-        try{
-            Usuario nuevoUsuario = usuarioService.crearUsuario(usuario);
-            return ResponseEntity.status(201).body(nuevoUsuario);
-        }catch(IllegalArgumentException e){
-            return ResponseEntity.status(409).body(e.getMessage());
-        }
+        Usuario nuevoUsuario = usuarioService.crearUsuario(usuario);
+        return ResponseEntity.status(201).body(nuevoUsuario);
     }
 
     @GetMapping("/comunidad")
@@ -64,11 +55,7 @@ public class UsuarioController {
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Usuario> getUsuarioPorId(@PathVariable Long idUsuario, @AuthenticationPrincipal Usuario usuarioLogado){
         Usuario usuario = usuarioService.findById(idUsuario, usuarioLogado);
-        if(usuario != null){
-            return ResponseEntity.ok(usuario);
-        }else{
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.status(200).body(usuario);
     }
 
     @GetMapping("/me")
@@ -90,13 +77,8 @@ public class UsuarioController {
     @DeleteMapping("/{idUsuario}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<String> deleteUsuario(@PathVariable Long idUsuario, @AuthenticationPrincipal Usuario usuarioLogado){
-        boolean borrado = usuarioService.deleteUsuario(idUsuario, usuarioLogado);
-
-        if(borrado){
-            return ResponseEntity.ok("Usuario eliminado correctamente.");
-        } else {
-            return ResponseEntity.status(404).body("Usuario no encontrado.");
-        }
+        usuarioService.deleteUsuario(idUsuario, usuarioLogado);
+        return ResponseEntity.status(200).body("Usuario eliminado correctamente."); 
     }
 
     
@@ -104,23 +86,15 @@ public class UsuarioController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> modificarUsuario(@RequestBody Usuario usuarioNuevo, @AuthenticationPrincipal Usuario usuarioLogado) {
         Long idUsuario = usuarioLogado.getId();
-        try{
-            Usuario modificado = usuarioService.modificarUsuario(idUsuario, usuarioNuevo);
-            return ResponseEntity.status(200).body(modificado);
-        }catch(NoSuchElementException e){
-            return ResponseEntity.status(404).body(e.getMessage());
-        }         
+        Usuario modificado = usuarioService.modificarUsuario(idUsuario, usuarioNuevo);
+        return ResponseEntity.status(200).body(modificado);      
     }
     
     @PutMapping("/admin/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> modificarUsuarioAdmin(@PathVariable Long id, @RequestBody Usuario usuarioNuevo, @AuthenticationPrincipal Usuario usuarioLogado) {
-        try{
-            Usuario modificado = usuarioService.modificarUsuarioAdmin(id, usuarioNuevo, usuarioLogado);
-            return ResponseEntity.status(200).body(modificado);
-        }catch(NoSuchElementException e){
-            return ResponseEntity.status(404).body(e.getMessage());
-        }        
+        Usuario modificado = usuarioService.modificarUsuarioAdmin(id, usuarioNuevo, usuarioLogado);
+        return ResponseEntity.status(200).body(modificado);     
     }
     
     @PatchMapping("/pass")
@@ -130,26 +104,15 @@ public class UsuarioController {
             cambioPass.getNewPassword() == null || cambioPass.getNewPassword().isBlank()){
             return ResponseEntity.status(400).body("Los datos de cambio de contraseña son obligatorios");
         }
-        try{
-            usuarioService.cambioPassword(idUsuario, cambioPass);
-            return ResponseEntity.ok("Contraseña modificada");
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(401).body(e.getMessage());
-        }catch (NoSuchElementException e){
-            return ResponseEntity.status(404).body(e.getMessage());
-        }
-       
+        usuarioService.cambioPassword(idUsuario, cambioPass);
+        return ResponseEntity.status(201).body("Contraseña modificada");       
     }
 
     @PatchMapping("/admin/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<?> cambioPassAdmin(@PathVariable Long id, @AuthenticationPrincipal Usuario usuarioLogado){
-        try{
-            usuarioService.cambioPassAdmin(id, usuarioLogado);
-            return ResponseEntity.status(200).build();
-        }catch (NoSuchElementException e){
-            return ResponseEntity.status(404).body(e.getMessage());
-        }
+        usuarioService.cambioPassAdmin(id, usuarioLogado);
+        return ResponseEntity.status(204).build();
     }    
 }
 
