@@ -1,86 +1,62 @@
 package com.comunidad.comunidad_backend.controller;
 
-import com.comunidad.comunidad_backend.security.JwtService;
 import com.comunidad.comunidad_backend.service.PublicacionService;
-import com.comunidad.comunidad_backend.entity.Comunidad;
 import com.comunidad.comunidad_backend.entity.Publicacion;
 import com.comunidad.comunidad_backend.entity.Usuario;
 import com.comunidad.comunidad_backend.enums.TipoPublicacion;
+import com.comunidad.comunidad_backend.dto.ListarPublicaciones;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
-
-
-
-
 
 @RestController
 @RequestMapping("api/publicaciones")
 
 public class PublicacionController {
 
-    @Autowired
-    private PublicacionService publicacionService;
-
-    @Autowired
-    private JwtService jwtService;
+    private final PublicacionService publicacionService;
+    
+    public PublicacionController(
+        PublicacionService publicacionService
+    ){
+        this.publicacionService = publicacionService;
+    }
 
     @GetMapping("/noticias")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<?> getPublicacion(HttpServletRequest request) {
-        String token = request.getHeader("Authorization").substring(7);
-        Long idComunidad = jwtService.extraerIdComunidad(token);
+    public ResponseEntity<?> getPublicacion(@AuthenticationPrincipal Usuario usuarioLogado) {
+        
+        List<ListarPublicaciones> lista = publicacionService.listarPorComunidad(usuarioLogado.getComunidad().getId(), TipoPublicacion.NOTICIA);
 
-        List<Publicacion> lista = publicacionService.listarPorComunidad(idComunidad, TipoPublicacion.NOTICIA);
-
-        return ResponseEntity.ok(lista);
+        return ResponseEntity.status(200).body(lista);
     }
 
     @PostMapping("/noticias")
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity <?> crearPublicacion (@RequestBody Publicacion publicacion, HttpServletRequest request) {
-        String token = request.getHeader("Authorization").substring(7);
-        Comunidad idComunidad = new Comunidad();
-        Usuario idUsuario = new Usuario();
-        idComunidad.setId(jwtService.extraerIdComunidad(token));
-        idUsuario.setId(jwtService.extraerIdUsuario(token));
-        publicacion.setComunidad(idComunidad);
-        publicacion.setUsuario(idUsuario);
-        try{
-            Publicacion nuevaPublicacion = publicacionService.crearPublicacion(publicacion, TipoPublicacion.NOTICIA);
-            return ResponseEntity.ok(nuevaPublicacion);
-        }catch(IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    ResponseEntity <?> crearPublicacion (@RequestBody Publicacion publicacion, @AuthenticationPrincipal Usuario usuarioLogado) {
+    
+        Publicacion nuevaPublicacion = publicacionService.crearPublicacion(publicacion, TipoPublicacion.NOTICIA, usuarioLogado);
+        return ResponseEntity.status(201).body(nuevaPublicacion);
     }
 
     @PutMapping("/noticias/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> modificarPublicacion(@PathVariable Long id, @RequestBody Publicacion publicacion) {
-       try{
-        Publicacion modificado = publicacionService.modPublicacion(id, publicacion);
+    public ResponseEntity<?> modificarPublicacion(@PathVariable Long id, @RequestBody Publicacion publicacion, @AuthenticationPrincipal Usuario usuarioLogado) {
+    
+        Publicacion modificado = publicacionService.modPublicacion(id, publicacion, usuarioLogado);
         return ResponseEntity.ok(modificado);
-       }catch(Exception err){
-        return ResponseEntity.notFound().build();
-       }
+       
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> borrarPublicacion(@PathVariable Long id){
-        boolean eliminado = publicacionService.borrarPublicacion(id);
-        if(eliminado){
-            return ResponseEntity.ok("eliminado");
-        }else{
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> borrarPublicacion(@PathVariable Long id, @AuthenticationPrincipal Usuario usuarioLogado){
+        publicacionService.borrarPublicacion(id, usuarioLogado);
+        return ResponseEntity.status(200).body("eliminado");
     }
 
     
