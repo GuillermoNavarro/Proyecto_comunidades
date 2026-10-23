@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.comunidad.comunidad_backend.entity.Recibo;
-import com.comunidad.comunidad_backend.enus.EstadoRecibo;
+import com.comunidad.comunidad_backend.enums.EstadoRecibo;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -5,14 +5,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.comunidad.comunidad_backend.dto.ModifDocumento;
 import com.comunidad.comunidad_backend.entity.Documento;
+import com.comunidad.comunidad_backend.entity.Usuario;
 import com.comunidad.comunidad_backend.service.DocumentoService;
-import com.comunidad.comunidad_backend.security.JwtService;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
 
@@ -23,80 +21,44 @@ import java.util.List;
 
 public class DocumentoController {
 
-    @Autowired
-    private DocumentoService documentoService;
+    private final DocumentoService documentoService;
 
-    @Autowired
-    private JwtService jwtService;
+    public DocumentoController(
+        DocumentoService documentoService
+    ){
+        this.documentoService = documentoService;
+    }
+
 
     @PostMapping(consumes = {"multipart/form-data"})
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity <?> createDocumento(
-        @ModelAttribute Documento documento, @RequestParam("archivo") MultipartFile file, @RequestParam(value = "idComunidadManual", required = false)Long idComunidadManual, HttpServletRequest request){
-       try{
-        String token = request.getHeader("Authorization").substring(7);
-        String rol = jwtService.extraerRol(token);
-        Long idComunidadFinal;
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity <?> createDocumento(@ModelAttribute Documento documento, @RequestParam("archivo") MultipartFile file, @AuthenticationPrincipal Usuario usuarioLogado){
+       
+        Documento nuevo = documentoService.crearDocumento(file, documento, usuarioLogado);
+        return ResponseEntity.status(201).body(nuevo);
 
-        if(rol.equals("ROLE_SUPER_ADMIN") && idComunidadManual != null){
-            idComunidadFinal = idComunidadManual;
-        }else{
-            idComunidadFinal = jwtService.extraerIdComunidad(token);
-        } 
-
-        if(file.isEmpty() || !file.getContentType().equals("application/pdf")){
-            throw new IllegalArgumentException("Solo se permiten PDF");
-        }
-
-        Documento nuevo = documentoService.crearDocumento(file, documento, idComunidadFinal);
-        return ResponseEntity.ok(nuevo);
-       }catch(IllegalArgumentException err){
-        return ResponseEntity.badRequest().body(err.getMessage());
-       }catch (Exception err){
-        return ResponseEntity.internalServerError().body("Error: " +err.getMessage());
-       }
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> getDocumentos( @RequestParam(value = "idComunidadManual", required = false)Long idComunidadManual, HttpServletRequest request){
+    public ResponseEntity<?> getDocumentos( @RequestParam(value = "idComunidadManual", required = false)Long idComunidadManual, @AuthenticationPrincipal Usuario usuarioLogado){
         
-        String token = request.getHeader("Authorization").substring(7);
-        String rol = jwtService.extraerRol(token);
-        Long idComunidad = jwtService.extraerIdComunidad(token);
-
-        List<Documento> lista = documentoService.listarPorComunidad(idComunidad, idComunidadManual, rol);
-        
-        return ResponseEntity.ok(lista);
+        List<Documento> lista = documentoService.listarPorComunidad(idComunidadManual, usuarioLogado);
+        return ResponseEntity.status(200).body(lista);
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> modificarDocumento(@PathVariable Long id, @RequestBody ModifDocumento modifDocumento){
-        try{
-            Documento modificado = documentoService.actualizarCampos(id,modifDocumento);
-            return ResponseEntity.ok(modificado);
-        }catch(Exception err){
-            return ResponseEntity.notFound().build();
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> modificarDocumento(@PathVariable Long id, @RequestBody ModifDocumento modifDocumento, @AuthenticationPrincipal Usuario usuarioLogado){
+   
+        Documento modificado = documentoService.actualizarCampos(id, modifDocumento, usuarioLogado);
+        return ResponseEntity.status(201).body(modificado);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<?> borrarDocumento(@PathVariable Long id){
-        boolean eliminado = documentoService.borrarDocumento(id);
-
-        if(eliminado){
-            return ResponseEntity.ok("eliminado");
-        }else{
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> borrarDocumento(@PathVariable Long id, @AuthenticationPrincipal Usuario usuarioLogado){
+        documentoService.borrarDocumento(id, usuarioLogado);
+        return ResponseEntity.status(200).body("Documento eliminado correctamente");
     }
-
-
-
-   
-    
-    
-    
 }

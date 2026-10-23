@@ -3,7 +3,7 @@ package com.comunidad.comunidad_backend.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.comunidad.comunidad_backend.enus.TipoMovimiento;
+import com.comunidad.comunidad_backend.enums.TipoMovimiento;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;

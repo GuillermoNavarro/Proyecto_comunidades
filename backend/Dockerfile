@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-alpine AS base
+FROM eclipse-temurin:21-jdk-jammy AS base
 WORKDIR /app/backend
 COPY .mvn/ .mvn/
 COPY pom.xml mvnw ./
@@ -18,7 +18,7 @@ RUN ./mvnw dependency:go-offline -B
 COPY src/ ./src/
 RUN ./mvnw clean package -DskipTests
 
-FROM eclipse-temurin:21-jre-alpine AS production
+FROM eclipse-temurin:21-jre-jammy AS production
 WORKDIR /app/backend
 COPY --from=build-production /app/backend/target/*.jar app.jar
 RUN addgroup -g 1500 -S spring && adduser -u 1500 -S spring -G spring 

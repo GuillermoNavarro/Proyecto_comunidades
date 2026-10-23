@@ -2,7 +2,7 @@ package com.comunidad.comunidad_backend.service;
 
 import org.springframework.stereotype.Service;
 import com.comunidad.comunidad_backend.entity.Movimiento;
-import com.comunidad.comunidad_backend.enus.TipoMovimiento;
+import com.comunidad.comunidad_backend.enums.TipoMovimiento;
 import com.comunidad.comunidad_backend.repository.MovimientoRepository;
 
 import jakarta.transaction.Transactional;

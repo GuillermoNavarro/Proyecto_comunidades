@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.comunidad.comunidad_backend.entity.Cuota;
 import com.comunidad.comunidad_backend.entity.Usuario;
-import com.comunidad.comunidad_backend.enus.TipoCuota;
+import com.comunidad.comunidad_backend.enums.TipoCuota;
 import com.comunidad.comunidad_backend.repository.CuotaRepository;
 import java.util.List;
 import java.util.NoSuchElementException;

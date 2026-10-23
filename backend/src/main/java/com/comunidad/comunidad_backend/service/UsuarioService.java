@@ -1,13 +1,14 @@
 package com.comunidad.comunidad_backend.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.comunidad.comunidad_backend.repository.UsuarioRepository;
 import com.comunidad.comunidad_backend.dto.CambioPass;
 import com.comunidad.comunidad_backend.entity.Usuario;
-import com.comunidad.comunidad_backend.enus.Rol;
+import com.comunidad.comunidad_backend.enums.Rol;
+import com.comunidad.comunidad_backend.exception.CredencialesInvalidasException;
+import com.comunidad.comunidad_backend.exception.RecursoDuplicadoException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,14 +18,19 @@ import java.math.BigDecimal;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UsuarioService(
+        UsuarioRepository usuarioRepository,
+        EmailService emailService,
+        PasswordEncoder passwordEncoder
+    ){
+        this.usuarioRepository = usuarioRepository;
+        this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
@@ -32,9 +38,12 @@ public class UsuarioService {
 
     public Usuario crearUsuario(Usuario usuario) {
         if(usuarioRepository.findByDni(usuario.getDni()).isPresent()){
-            throw new IllegalArgumentException("Ya existe un usuario con el DNI:" + usuario.getDni());
+            throw new RecursoDuplicadoException("Ya existe un usuario con el DNI:" + usuario.getDni());
         }
-        
+        if(usuarioRepository.findByEmail(usuario.getEmail()).isPresent()){
+            throw new RecursoDuplicadoException("Ya existe un usuario con el email:" + usuario.getEmail());
+        }
+        usuario.setId(null);
         usuario.setRol(Rol.USER);
         usuario.setEstado(true);
         String newPassword = UUID.randomUUID().toString().substring(0, 8);
@@ -51,23 +60,28 @@ public class UsuarioService {
         return usuarioRepository.findByComunidadId(idComunidad);
     }
 
-    public Usuario findById(Long id){
-        return usuarioRepository.findById(id).orElse(null);
+    public Usuario findById(Long id, Usuario usuarioLogado){
+        if(usuarioLogado.getRol() == Rol.SUPER_ADMIN){
+            return usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+        }else{
+            return usuarioRepository.findByIdAndComunidadId(id, usuarioLogado.getComunidad().getId()).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+        }
     }
 
     public Usuario findByEmail(String email){
-        return usuarioRepository.findByEmail(email).orElse(null);
+        return usuarioRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
     }
     
-    public boolean deleteUsuario(Long idUsuario) {
-        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
-        if(usuario != null){
-            usuario.setEstado(false);
-            usuario.setCoeficiente(BigDecimal.ZERO);
-            usuarioRepository.save(usuario);
-            return true;
+    public void deleteUsuario(Long idUsuario, Usuario usuarioLogado) {
+        Usuario usuario;
+        if(usuarioLogado.getRol() == Rol.SUPER_ADMIN){
+            usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+        }else{
+            usuario = usuarioRepository.findByIdAndComunidadId(idUsuario, usuarioLogado.getComunidad().getId()).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
         }
-        return false;
+        usuario.setEstado(false);
+        usuario.setCoeficiente(BigDecimal.ZERO);
+        usuarioRepository.save(usuario);
     }
     
     public Usuario login(String email, String password){
@@ -99,20 +113,22 @@ public class UsuarioService {
     }
 
     public Usuario modificarUsuario(Long id, Usuario usuarioNuevo){
-        Usuario usuarioActual = usuarioRepository.findById(id).orElse(null);
-        if(usuarioActual == null){
-            return null;
-        }
+        Usuario usuarioActual = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+    
         actualizarComunes(usuarioActual, usuarioNuevo);
         usuarioRepository.save(usuarioActual);
         return usuarioActual;
     }
 
-    public Usuario modificarUsuarioAdmin(Long id, Usuario usuarioNuevo){
-        Usuario usuarioActual = usuarioRepository.findById(id).orElse(null);
-        if (usuarioActual == null) {
-            return null;
+    public Usuario modificarUsuarioAdmin(Long id, Usuario usuarioNuevo, Usuario usuarioLogado){
+        Usuario usuarioActual;
+        if(usuarioLogado.getRol() == Rol.SUPER_ADMIN){
+            usuarioActual = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+        }else{
+            usuarioActual = usuarioRepository.findByIdAndComunidadId(id, usuarioLogado.getComunidad().getId()).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
         }
+
+        //Usuario usuarioActual = usuarioRepository.findById(id).orElse(null);
         actualizarComunes(usuarioActual, usuarioNuevo);
         if(usuarioNuevo.getDni() != null){
             usuarioActual.setDni(usuarioNuevo.getDni());
@@ -144,7 +160,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
         if(!passwordEncoder.matches(cambioPass.getOldPassword(), usuario.getPassword())){
-            throw new IllegalArgumentException("Contraseña incorrecta");
+            throw new CredencialesInvalidasException("Contraseña incorrecta");
         }
 
         usuario.setPassword(passwordEncoder.encode(cambioPass.getNewPassword()));
@@ -153,8 +169,13 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public void cambioPassAdmin(Long id){
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+    public void cambioPassAdmin(Long id, Usuario usuarioLogado){
+        Usuario usuario;
+        if(usuarioLogado.getRol() == Rol.SUPER_ADMIN){
+            usuario= usuarioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+        }else{
+            usuario = usuarioRepository.findByIdAndComunidadId(id, usuarioLogado.getComunidad().getId()).orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+        }
 
         String newPassword = UUID.randomUUID().toString().substring(0, 8);
         usuario.setPassword(passwordEncoder.encode(newPassword));

@@ -2,7 +2,7 @@ package com.comunidad.comunidad_backend.entity;
 
 import java.math.BigDecimal;
 
-import com.comunidad.comunidad_backend.enus.EstadoRecibo;
+import com.comunidad.comunidad_backend.enums.EstadoRecibo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
