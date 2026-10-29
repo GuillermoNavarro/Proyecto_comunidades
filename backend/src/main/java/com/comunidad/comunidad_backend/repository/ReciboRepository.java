@@ -8,6 +8,8 @@ import com.comunidad.comunidad_backend.enums.EstadoRecibo;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
 
 @Repository
 public interface ReciboRepository extends JpaRepository<Recibo, Long> {
@@ -17,6 +19,8 @@ public interface ReciboRepository extends JpaRepository<Recibo, Long> {
     List<Recibo> findByComunidadId(Long idComunidad);
 
     List<Recibo> findByCuotaId(Long idCuota);
+
+    Optional<Recibo> findByIdAndComunidadId(Long idRecibo, Long idComunidad);
 
     List<Recibo> findByCuotaIdAndComunidadId(Long idCuota, Long idComunidad);
 

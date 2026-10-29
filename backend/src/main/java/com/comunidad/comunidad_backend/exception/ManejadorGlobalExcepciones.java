@@ -44,4 +44,9 @@ public class ManejadorGlobalExcepciones {
     public ResponseEntity<String> manejarGenerico(Exception e){
         return ResponseEntity.status(500).body("Error interno del servidor");
     }
+
+    @ExceptionHandler(EstadoInvalidoException.class)
+    public ResponseEntity<String> manejarEstado(EstadoInvalidoException e){
+        return ResponseEntity.status(409).body(e.getMessage());
+    }
 }

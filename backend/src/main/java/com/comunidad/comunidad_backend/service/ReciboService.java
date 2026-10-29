@@ -9,9 +9,11 @@ import com.comunidad.comunidad_backend.entity.Recibo;
 import com.comunidad.comunidad_backend.entity.Cuota;
 import com.comunidad.comunidad_backend.entity.Usuario;
 import com.comunidad.comunidad_backend.enums.EstadoRecibo;
+import com.comunidad.comunidad_backend.exception.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.NoSuchElementException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -72,13 +74,13 @@ public class ReciboService {
         return reciboRepository.findByUsuarioIdAndComunidadIdAndEstadoRecibo(idUsuario, idComunidad, EstadoRecibo.PENDIENTE);
     }
 
-    public void marcarPagado(Long idRecibo){
-        Recibo recibo = reciboRepository.findById(idRecibo).orElseThrow(() -> new IllegalArgumentException("Recibo no encontrado"));
+    public Recibo marcarPagado(Long idRecibo, Long idComunidad){
+        Recibo recibo = reciboRepository.findByIdAndComunidadId(idRecibo, idComunidad).orElseThrow(() -> new NoSuchElementException("Recibo no encontrado"));
         if(recibo.getEstadoRecibo() == EstadoRecibo.PAGADO){
-            throw new IllegalArgumentException("El recibo ya esta pagado");
+            throw new EstadoInvalidoException("El recibo ya esta pagado");
         }
         recibo.setEstadoRecibo(EstadoRecibo.PAGADO);
-        reciboRepository.save(recibo);
+        return reciboRepository.save(recibo);
     }
 
     public void borrarRecibos(Cuota cuota){

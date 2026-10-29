@@ -6,7 +6,7 @@ import com.comunidad.comunidad_backend.entity.Movimiento;
 
 
 import java.util.List;
-
+import java.util.Optional;
 
 
 @Repository
@@ -16,5 +16,6 @@ public interface MovimientoRepository extends JpaRepository<Movimiento, Long> {
     List<Movimiento> findByUsuarioId(Long idUsuario);
     List<Movimiento> findByReciboCuotaId(Long idCuota);
     boolean existsByReciboCuotaId(Long idCuota);
+    Optional<Movimiento> findByIdAndComunidadId(Long idMovimiento, Long idComunidad);
 
 }
